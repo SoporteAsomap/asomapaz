@@ -22,9 +22,9 @@ COPY . .
 # Crear directorios necesarios
 RUN mkdir -p media staticfiles
 
-# Hacer el script ejecutable
+# Hacer el script ejecutable y normalizar finales de linea de Windows
 COPY start.sh .
-RUN chmod +x start.sh
+RUN sed -i 's/\r$//' start.sh && chmod +x start.sh
 
 # Configurar variables de entorno
 ENV PYTHONPATH=/app

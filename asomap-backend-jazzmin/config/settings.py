@@ -30,10 +30,14 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'about',
+    'core',
+    'header',
     'home',
+    'layout',
     'locations',
     'news',
     'products',
+    'educacionfinanciera',
     'service',
     'prousuario',
 ]

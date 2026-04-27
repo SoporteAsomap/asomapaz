@@ -59,8 +59,9 @@ asomap/
 
 ### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/YohanGarcia/asomap.git
-cd asomap
+# Reemplaza la URL con la de tu nuevo repositorio
+git clone <tu-nuevo-repositorio>
+cd <nombre-del-proyecto>
 ```
 
 ### 2. Configurar variables de entorno
@@ -153,55 +154,6 @@ El proyecto incluye un sistema completo de automatización de datos que se ejecu
 - **Manejo de errores** robusto
 - **Logs detallados** de cada operación
 
-### Comandos Automatizados
-```bash
-# About
-python manage.py create_about_data --force
-
-# Community
-python manage.py create_community_data --force
-
-# Financial
-python manage.py create_financial_data --force
-
-# Memory
-python manage.py create_memory_data --force
-
-# Policy
-python manage.py create_policy_data --force
-
-# Financial Guidance
-python manage.py create_financial_guidance_data --force
-
-# Home
-python manage.py create_home_data --force
-
-# Locations
-python manage.py create_services --force
-python manage.py create_schedules --force
-
-# News
-python manage.py create_sample_news --force
-python manage.py create_sample_promotions --force
-
-# Products
-python manage.py create_products --force
-python manage.py create_sample_accounts --force
-python manage.py create_sample_cards --force
-python manage.py create_sample_certificates --force
-python manage.py create_sample_loans --force
-
-# Pro Usuario
-python manage.py create_provinces --force
-python manage.py create_sample_service_rates --force
-python manage.py create_sample_contracts --force
-python manage.py create_sample_rights_and_duties --force
-python manage.py create_sample_fraud_reports --force
-python manage.py create_sample_abandoned_accounts --force
-
-# Service
-python manage.py create_sample_services --force
-```
 
 ## 🚀 Comandos Útiles
 

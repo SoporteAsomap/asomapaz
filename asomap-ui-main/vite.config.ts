@@ -21,10 +21,10 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       host: true,
-      port: 4321,
+      port: 3000,
       proxy: {
         '/mock': {
-          target: 'http://localhost:4321',
+          target: 'http://localhost:3000',
           rewrite: (path) => path.replace(/^\/mock/, '/public/mock')
         },
         '/api': {

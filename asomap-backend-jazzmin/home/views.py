@@ -1,31 +1,64 @@
-@action(detail=False, methods=['get'], url_path='slider')
-def slider(self, request):
-    try:
-        slider_items = list(
-            SliderItem.objects.filter(is_active=True).order_by('order')
-        )
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-        if not slider_items:
-            return Response(
-                {"error": "Slider items not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+from .models import (
+    DebitCardPromo,
+    EducationSection,
+    PeKeAccountSummary,
+    ProductSection,
+    SliderItem,
+)
+from .serializers import (
+    DebitCardPromoSerializer,
+    EducationSectionSerializer,
+    PeKeAccountSummarySerializer,
+    ProductSectionSerializer,
+    SliderItemSerializer,
+)
 
-        slides = [
-            {
-                'id': item.id,
-                'image': item.image_desktop_url,
-                'imageTablet': item.image_tablet_url,
-                'imageMobile': item.image_mobile_url,
-                'alt': item.alt
-            }
-            for item in slider_items
-        ]
 
-        return Response(slides)
+class HomeViewSet(viewsets.GenericViewSet):
+    queryset = SliderItem.objects.none()
 
-    except Exception as e:
-        return Response(
-            {"error": str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+    @action(detail=False, methods=["get"], url_path="slider")
+    def slider(self, request):
+        items = SliderItem.objects.filter(is_active=True).order_by("order")
+        serializer = SliderItemSerializer(items, many=True, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["get"], url_path="product-section")
+    def product_section(self, request):
+        section = ProductSection.objects.filter(is_active=True).prefetch_related("products").first()
+        if not section:
+            return Response({"data": None}, status=status.HTTP_200_OK)
+
+        serializer = ProductSectionSerializer(section, context={"request": request})
+        return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["get"], url_path="education-section")
+    def education_section(self, request):
+        section = EducationSection.objects.filter(is_active=True).prefetch_related("education_items").first()
+        if not section:
+            return Response({"data": None}, status=status.HTTP_200_OK)
+
+        serializer = EducationSectionSerializer(section, context={"request": request})
+        return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["get"], url_path="peke-account-summary")
+    def peke_account_summary(self, request):
+        summary = PeKeAccountSummary.objects.filter(is_active=True).first()
+        if not summary:
+            return Response({}, status=status.HTTP_200_OK)
+
+        serializer = PeKeAccountSummarySerializer(summary, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["get"], url_path="debit-card-promo")
+    def debit_card_promo(self, request):
+        promo = DebitCardPromo.objects.filter(is_active=True).first()
+        if not promo:
+            return Response({}, status=status.HTTP_200_OK)
+
+        serializer = DebitCardPromoSerializer(promo, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)

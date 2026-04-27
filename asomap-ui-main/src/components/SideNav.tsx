@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 const SideNav: React.FC = () => {
     const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
     const location = useLocation();
+    const isLoanPage = location.pathname.startsWith('/productos/prestamos') || location.pathname.startsWith('/productos/prestamo/');
 
     // No mostrar en la página de ubicaciones
     if (location.pathname === '/locations/map') {
@@ -18,13 +19,13 @@ const SideNav: React.FC = () => {
             <motion.div
                 className="fixed left-0 bottom-16 z-30 sm:bottom-20"
                 initial={{ x: -32 }}
-                animate={{ x: -24 }}
+                animate={{ x: isLoanPage ? -12 : -24 }}
                 whileHover={{ x: 0 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
                 <motion.button
                     type="button"
-                    className="group relative w-14 h-10 sm:w-16 sm:h-12 p-0 rounded-r-2xl overflow-hidden shadow-lg"
+                    className={`group relative overflow-hidden rounded-r-2xl p-0 shadow-lg transition-all ${isLoanPage ? 'h-12 w-40 sm:h-14 sm:w-48' : 'h-10 w-14 sm:h-12 sm:w-16'}`}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setIsCalculatorOpen(true)}
                     aria-label="Abrir calculadora"
@@ -39,7 +40,12 @@ const SideNav: React.FC = () => {
                     </div>
 
                     {/* Contenedor del icono */}
-                    <div className="relative w-full h-full flex items-center justify-end pr-3 sm:pr-4">
+                    <div className={`relative flex h-full w-full items-center ${isLoanPage ? 'justify-between px-4 sm:px-5' : 'justify-end pr-3 sm:pr-4'}`}>
+                        {isLoanPage && (
+                            <span className="pr-3 text-left text-xs font-semibold uppercase tracking-wide text-white sm:text-sm">
+                                Calcula tu cuota
+                            </span>
+                        )}
                         <motion.div
                             initial={{ rotate: 0 }}
                             whileHover={{ rotate: 360 }}
