@@ -215,10 +215,13 @@ const CurrencyField: React.FC<{
     placeholder?: string;
 }> = ({ id, label, value, onChange, placeholder = 'RD$ 0.00' }) => {
     const [displayValue, setDisplayValue] = useState(value ? formatCurrency(value) : '');
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
-        setDisplayValue(value ? formatCurrency(value) : '');
-    }, [value]);
+        if (!isEditing) {
+            setDisplayValue(value ? formatCurrency(value) : '');
+        }
+    }, [value, isEditing]);
 
     return (
         <div className="space-y-2">
@@ -236,8 +239,14 @@ const CurrencyField: React.FC<{
                     setDisplayValue(rawValue);
                     onChange(parseMoneyInput(rawValue));
                 }}
-                onFocus={() => setDisplayValue(value ? String(value) : '')}
-                onBlur={() => setDisplayValue(value ? formatCurrency(value) : '')}
+                onFocus={() => {
+                    setIsEditing(true);
+                    setDisplayValue(value ? String(value) : '');
+                }}
+                onBlur={() => {
+                    setIsEditing(false);
+                    setDisplayValue(value ? formatCurrency(value) : '');
+                }}
                 className="w-full border-b border-secondary-light bg-transparent px-0 py-2 text-base text-neutral-100 outline-none transition-colors focus:border-primary-accent"
             />
         </div>
