@@ -88,7 +88,6 @@ export const savingTipsService = {
       
       // Si no hay datos del backend, retornar datos por defecto en desarrollo
       if (faqItems.length === 0 && API_CONFIG.IS_DEVELOPMENT) {
-        console.warn('[SavingTipsService] No FAQ found in backend, using default data');
         return [
           {
             id: 1,
@@ -158,3 +157,4 @@ export const savingTipsService = {
     }
   }
 };
+

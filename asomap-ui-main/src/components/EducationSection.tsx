@@ -88,7 +88,7 @@ const EducationSection: React.FC<IEducationSectionProps> = ({ data }) => {
                         }}
                         className="education-swiper"
                     >
-                        {data.educationItems.map((item, index) => (
+                        {(data.educationItems ?? []).map((item, index) => (
                             <SwiperSlide key={index}>
                                 <motion.div 
                                     className="group relative overflow-hidden rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"

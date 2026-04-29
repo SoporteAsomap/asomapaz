@@ -137,7 +137,6 @@ const PromotionDetail: React.FC = () => {
         const data = await promotionsService.getPromotions();
         setPromotionsData(data);
       } catch (error) {
-        console.error('Error fetching promotions data:', error);
         setPromotionsData(promotionsData); // Fallback a mock data
       }
     };
@@ -281,3 +280,4 @@ const PromotionDetail: React.FC = () => {
 };
 
 export default PromotionDetail;
+

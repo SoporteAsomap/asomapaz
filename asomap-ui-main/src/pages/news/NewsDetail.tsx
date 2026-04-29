@@ -40,15 +40,6 @@ const MediaGallery: React.FC<{ media: INewsMedia[] }> = ({ media }) => {
         const actualType = getMediaType(item.url, item.type);
         const mediaUrl = actualType === 'video' ? getMediaUrl(item.url) : getImageUrl(item.url);
         
-        console.log(`Media item ${index}:`, {
-          originalUrl: item.url,
-          processedUrl: mediaUrl,
-          declaredType: item.type,
-          detectedType: actualType,
-          expectedWorkingUrl: item.url,
-          urlsMatch: mediaUrl === item.url
-        });
-        
         return (
           <div key={index} className="relative">
             {actualType === 'image' ? (
@@ -58,7 +49,6 @@ const MediaGallery: React.FC<{ media: INewsMedia[] }> = ({ media }) => {
                   alt={item.caption || ''}
                   className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
                   onError={(e) => {
-                    console.error('Error loading image:', item.url, '->', mediaUrl);
                     e.currentTarget.style.display = 'none';
                   }}
                 />
@@ -70,23 +60,6 @@ const MediaGallery: React.FC<{ media: INewsMedia[] }> = ({ media }) => {
               </div>
             ) : (
               <div className="relative aspect-video bg-gray-100 rounded-lg">
-                {/* Debug info - remove in production */}
-               <div className="absolute top-2 left-2 bg-black bg-opacity-75 text-white text-xs p-1 rounded z-10">
-                  <div>URL: {mediaUrl}</div>
-                  <div>Type: {actualType}</div>
-                  <button 
-                    onClick={() => {
-                      console.log('Testing video URL:', mediaUrl);
-                      window.open(mediaUrl, '_blank');
-                    }}
-                    className="bg-blue-500 text-white px-2 py-1 rounded text-xs mt-1"
-                  >
-                    Test URL
-                  </button>
-                </div> 
-                
-            
-                
                 {/* Video original con URL dinámica */}
                 <video
                   src={mediaUrl}
@@ -95,12 +68,6 @@ const MediaGallery: React.FC<{ media: INewsMedia[] }> = ({ media }) => {
                   preload="metadata"
                   title={item.caption || `Video ${index + 1}`}
                   onError={(e) => {
-                    console.error('Error loading video:', {
-                      originalUrl: item.url,
-                      processedUrl: mediaUrl,
-                      error: e,
-                      videoElement: e.currentTarget
-                    });
                     // Mostrar mensaje de error en lugar de intentar mostrar como imagen
                     const target = e.currentTarget as HTMLVideoElement;
                     target.style.display = 'none';
@@ -118,18 +85,6 @@ const MediaGallery: React.FC<{ media: INewsMedia[] }> = ({ media }) => {
                         </div>
                       `;
                     }
-                  }}
-                  onLoadStart={() => {
-                    console.log('Video loading started:', mediaUrl);
-                  }}
-                  onCanPlay={() => {
-                    console.log('Video can play:', mediaUrl);
-                  }}
-                  onLoadedData={() => {
-                    console.log('Video data loaded:', mediaUrl);
-                  }}
-                  onLoadedMetadata={() => {
-                    console.log('Video metadata loaded:', mediaUrl);
                   }}
                 />
                 {item.caption && (
@@ -204,7 +159,6 @@ const RelatedLinks: React.FC<{ links: INewsData['slides'] }> = ({ links }) => {
             alt={String(link.title)}
             className="w-full h-48 object-cover rounded-[20px] sm:rounded-[30px] lg:rounded-[50px]"
             onError={(e) => {
-              console.error('Error loading related news image:', link.image);
               e.currentTarget.style.display = 'none';
             }}
           />
@@ -233,7 +187,6 @@ const NewsDetail: React.FC = () => {
         const data = await newsService.getNews();
         setNewsData(data);
       } catch (err) {
-        console.error('Error loading news data:', err);
         setError('Error al cargar los datos de la noticia');
         setNewsData(newsData); // Fallback a mock data
       } finally {
@@ -309,7 +262,6 @@ const NewsDetail: React.FC = () => {
             alt={String(newsItem.title)}
             className="w-full h-full object-cover"
             onError={(e) => {
-              console.error('Error loading banner image:', newsItem.image);
               e.currentTarget.style.display = 'none';
             }}
           />

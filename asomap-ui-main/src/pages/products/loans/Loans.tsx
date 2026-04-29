@@ -36,7 +36,6 @@ const Loans: React.FC = () => {
         navigate('/productos/prestamos-hipotecarios');
         break;
       default:
-        console.error('Unknown loan type');
     }
   };
 

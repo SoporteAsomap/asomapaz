@@ -14,7 +14,16 @@ export const educationSectionService = {
 
       debugLog('[EducationSectionService] Backend response received successfully:', response.data);
 
-      return normalizeObjectMedia(response.data.data);
+      const raw = response.data.data as IEducationSectionProps['data'] & {
+        education_items?: IEducationSectionProps['data']['educationItems'];
+        footer_text?: IEducationSectionProps['data']['footerText'];
+      };
+      const mapped = {
+        ...raw,
+        educationItems: raw.education_items ?? raw.educationItems ?? [],
+        footerText: raw.footer_text ?? raw.footerText ?? '',
+      };
+      return normalizeObjectMedia(mapped);
     } catch (error) {
       errorLog('[EducationSectionService] Error fetching education section data:', error);
       throw error;

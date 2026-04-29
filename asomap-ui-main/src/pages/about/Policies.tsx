@@ -21,7 +21,6 @@ const Policies: React.FC = () => {
         setData(response);
       } catch (err) {
         setError('Error al cargar los datos');
-        console.error('Error fetching data:', err);
       } finally {
         setLoading(false);
       }
@@ -181,3 +180,4 @@ const Policies: React.FC = () => {
 };
 
 export default Policies;
+

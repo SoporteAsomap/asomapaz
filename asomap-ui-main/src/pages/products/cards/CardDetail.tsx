@@ -53,7 +53,6 @@ const CardDetail: React.FC = () => {
           setError('Tarjeta no encontrada');
         }
       } catch (err) {
-        console.error('Error fetching card data:', err);
         setError('Error al cargar los datos de la tarjeta');
       } finally {
         setLoading(false);
@@ -175,3 +174,4 @@ const CardDetail: React.FC = () => {
 };
 
 export default CardDetail;
+

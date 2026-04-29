@@ -60,7 +60,6 @@ export const useMenuData = () => {
 
         setMenuData(normalizedMenu);
       } catch (err) {
-        console.error('Error fetching menu data:', err);
         setError('No se pudo cargar el menú');
       } finally {
         setLoading(false);
@@ -78,3 +77,4 @@ export const useMenuData = () => {
 };
 
 export default useMenuData;
+

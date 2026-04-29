@@ -24,7 +24,6 @@ const LatestNews: React.FC = () => {
         const data = await newsService.getNews();
         setNewsDataState(data);
       } catch (error) {
-        console.error('Error fetching news data:', error);
       } finally {
         setLoading(false);
       }
@@ -64,7 +63,6 @@ const LatestNews: React.FC = () => {
                   alt={String(newsItem.title)}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    console.error('Error loading image:', newsItem.image);
                     (e.currentTarget as HTMLImageElement).style.display = 'none';
                   }}
                 />
@@ -119,3 +117,4 @@ const LatestNews: React.FC = () => {
 };
 
 export default LatestNews;
+

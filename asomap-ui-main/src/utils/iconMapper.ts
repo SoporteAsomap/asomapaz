@@ -63,7 +63,6 @@ const iconMap: Record<string, IconType> = {
 export const getIconComponent = (iconName: string): IconType => {
   const IconComponent = iconMap[iconName];
   if (!IconComponent) {
-    console.warn(`Icono no encontrado: ${iconName}. Usando icono por defecto.`);
     return FaStar; // Icono por defecto
   }
   return IconComponent;
@@ -85,3 +84,4 @@ export const isValidIcon = (iconName: string): boolean => {
 export const getAvailableIcons = (): string[] => {
   return Object.keys(iconMap);
 };
+

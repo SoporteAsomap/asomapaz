@@ -119,7 +119,6 @@ export const Slider: React.FC<ICarousel> = ({
                 {slides.map(({ id, image, imageTablet, imageMobile, alt }) => {
                     // Validar que image no sea null o undefined
                     if (!image) {
-                        console.warn(`Slider: Image is null/undefined for slide ${id}`);
                         return null; // No renderizar este slide
                     }
                     

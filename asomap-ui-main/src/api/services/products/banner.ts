@@ -27,7 +27,6 @@ export const bannerService = {
         slug: response.data.slug,
       };
     } catch (error) {
-      console.error('Error fetching main banner:', error);
       return null;
     }
   },
@@ -56,7 +55,6 @@ export const bannerService = {
         slug: banner.slug,
       }));
     } catch (error) {
-      console.error('Error fetching banners:', error);
       return [];
     }
   }

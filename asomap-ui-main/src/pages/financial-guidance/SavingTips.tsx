@@ -76,7 +76,6 @@ const SavingTips: React.FC = () => {
         setFaqItems(faqData);
         
       } catch (err) {
-        console.error('Error fetching saving tips data:', err);
         setError('Error al cargar los datos');
       } finally {
         setLoading(false);

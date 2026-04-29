@@ -33,7 +33,6 @@ const FraudReport: React.FC = () => {
 
     // Función para resetear el estado del formulario
     const resetFormState = () => {
-        console.log('🔄 Reseteando formulario manualmente...');
         setIsSubmitted(false);
         setSuccessMessage('');
         setError(null);
@@ -46,7 +45,6 @@ const FraudReport: React.FC = () => {
             file: null,
             message: ''
         });
-        console.log('✅ Formulario reseteado manualmente');
     };
 
     // Cargar datos de la página al montar el componente
@@ -57,7 +55,6 @@ const FraudReport: React.FC = () => {
                 const data = await fraudReportPageService.getFraudReportPage();
                 setPageData(data);
             } catch (error) {
-                console.error('Error loading fraud report page data:', error);
                 // En caso de error, usar datos mock como fallback
                 setPageData({
                     id: 0,
@@ -160,21 +157,6 @@ const FraudReport: React.FC = () => {
         setIsSubmitting(true);
         setError(null);
 
-        // Console log para ver los datos que se envían al backend
-        console.log('🚀 Datos enviando al backend:', {
-            classification: formData.classification,
-            fullName: formData.fullName,
-            document: formData.document,
-            phone: formData.phone,
-            email: formData.email,
-            message: formData.message,
-            file: formData.file ? {
-                name: formData.file.name,
-                size: formData.file.size,
-                type: formData.file.type
-            } : null
-        });
-
         try {
             // Enviar datos al backend
             const backendMessage = await fraudReportService.submitFraudReport(formData as ISubmitFraudReport);
@@ -196,7 +178,6 @@ const FraudReport: React.FC = () => {
 
             // Auto-reset después de 5 segundos
             setTimeout(() => {
-                console.log('🔄 Auto-reset del formulario después de 3 segundos...');
                 setIsSubmitted(false);
                 setSuccessMessage('');
             }, 3000);
@@ -448,3 +429,4 @@ const FraudReport: React.FC = () => {
 };
 
 export default FraudReport;
+

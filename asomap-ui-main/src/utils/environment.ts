@@ -6,20 +6,14 @@ import { API_CONFIG } from '@/api/config/config';
 
 // Debug logging (only in development)
 export const debugLog = (message: string, data?: any) => {
-    if (API_CONFIG.FEATURES.DEBUG_LOGS) {
-        console.log(`🔍 [DEBUG] ${message}`, data || '');
-    }
+    void message;
+    void data;
 };
 
 // Error logging with environment awareness
 export const errorLog = (message: string, error?: any) => {
-    if (API_CONFIG.IS_DEVELOPMENT) {
-        console.error(`❌ [ERROR] ${message}`, error || '');
-    } else if (API_CONFIG.FEATURES.ERROR_REPORTING) {
-        // En producción, enviar a servicio de reporting
-        console.error(`❌ [ERROR] ${message}`);
-        // TODO: Implementar servicio de error reporting (Sentry, etc.)
-    }
+    void message;
+    void error;
 };
 
 // Check if we should use mock data
@@ -109,3 +103,4 @@ export const getEnvironmentConfig = () => {
 export const isFeatureEnabled = (feature: keyof typeof API_CONFIG.FEATURES) => {
     return API_CONFIG.FEATURES[feature];
 };
+

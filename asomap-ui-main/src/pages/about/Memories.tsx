@@ -20,7 +20,6 @@ const Memories: React.FC = () => {
         setData(response);
       } catch (err) {
         setError('Error al cargar los datos');
-        console.error('Error fetching data:', err);
       } finally {
         setLoading(false);
       }
@@ -263,3 +262,4 @@ const Memories: React.FC = () => {
 };
 
 export default Memories;
+

@@ -86,7 +86,6 @@ const FinancialStatements: React.FC = () => {
         setData(response);
       } catch (err) {
         setError('Error al cargar los datos');
-        console.error('Error fetching data:', err);
       } finally {
         setLoading(false);
       }
@@ -287,3 +286,4 @@ const FinancialStatements: React.FC = () => {
 };
 
 export default FinancialStatements;
+

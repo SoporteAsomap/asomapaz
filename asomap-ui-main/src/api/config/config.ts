@@ -40,18 +40,4 @@ export const API_CONFIG = {
     }
 } as const;
 
-// Debug information (always show in production for debugging)
-console.log('🚀 ASOMAP API Configuration:', {
-    environment: API_CONFIG.ENV,
-    baseUrl: API_CONFIG.BASE_URL,
-    timeout: API_CONFIG.TIMEOUT,
-    features: API_CONFIG.FEATURES,
-    googleMapsApiKey: API_CONFIG.GOOGLE_MAPS_API_KEY ? '✅ Configured' : '❌ Missing',
-    serverIP: import.meta.env.VITE_SERVER_IP || 'Not set',
-    serverPort: import.meta.env.VITE_SERVER_PORT || 'Not set',
-    nginxUrl: import.meta.env.VITE_NGINX_URL || 'Not set',
-    backendUrl: import.meta.env.VITE_BACKEND_URL || 'Not set',
-    apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'Not set',
-    mediaBaseUrl: import.meta.env.VITE_MEDIA_BASE_URL || 'Not set'
-});
 

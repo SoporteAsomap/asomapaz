@@ -19,7 +19,6 @@ const Services: React.FC = () => {
           setSelectedService(data.itemDetails[0]);
         }
       } catch (error) {
-        console.error('Error fetching services:', error);
       } finally {
         setLoading(false);
       }
@@ -162,3 +161,4 @@ const Services: React.FC = () => {
 };
 
 export default Services;
+

@@ -28,7 +28,6 @@ const AccountContracts: React.FC = () => {
         setData(accountContractsData);
         
       } catch (err) {
-        console.error('Error fetching account contracts data:', err);
         setError('Error al cargar los datos de contratos de cuenta');
       } finally {
         setLoading(false);

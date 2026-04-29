@@ -62,7 +62,6 @@ export const Footer: React.FC = () => {
         setSocialNetworks(pickArray<ISocialNetworkData>(snRes));
         setContacts(pickArray<IContactData>(ctRes));
       } catch (error) {
-        console.error('❌ Error fetching footer data:', error);
         setErrorMsg('No se pudieron cargar redes y contactos.');
         setSocialNetworks([]);
         setContacts([]);
@@ -290,3 +289,4 @@ export const Footer: React.FC = () => {
     </footer>
   );
 };
+

@@ -26,7 +26,6 @@ export const contactsService = {
                 results: response.data.results
             };
         } catch (error) {
-            console.error('❌ [ERROR] [ContactsService] Error fetching contacts:', error);
             throw new Error('Error al obtener los contactos');
         }
     },
@@ -44,8 +43,8 @@ export const contactsService = {
 
             return response.data;
         } catch (error) {
-            console.error('❌ [ERROR] [ContactsService] Error fetching contact by ID:', error);
             throw new Error('Error al obtener el contacto');
         }
     }
 };
+

@@ -68,7 +68,6 @@ const CommunitySupport: React.FC = () => {
         setData(response);
       } catch (err) {
         setError('Error al cargar los datos');
-        console.error('Error fetching data:', err);
       } finally {
         setLoading(false);
       }
@@ -98,21 +97,8 @@ const CommunitySupport: React.FC = () => {
     ? data.data.initiatives
     : data.data.initiatives.filter(
       initiative => {
-        // Buscar la categoría por ID en las categorías disponibles
         const category = data.data.categories.find(cat => cat.id === selectedCategory);
-        const matches = category && initiative.category === category.name;
-        
-        // Debug log
-        if (selectedCategory !== 'all') {
-          console.log(`Filtering initiative "${initiative.title}":`, {
-            selectedCategory,
-            initiativeCategory: initiative.category,
-            categoryFound: category?.name,
-            matches
-          });
-        }
-        
-        return matches;
+        return category && initiative.category === category.name;
       }
     );
 
@@ -273,3 +259,5 @@ const CommunitySupport: React.FC = () => {
 };
 
 export default CommunitySupport;
+
+

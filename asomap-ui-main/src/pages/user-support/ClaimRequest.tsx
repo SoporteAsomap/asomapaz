@@ -41,7 +41,6 @@ const ClaimRequest: React.FC = () => {
                 const data = await claimRequestPageService.getClaimRequestPage();
                 setPageData(data);
             } catch (error) {
-                console.error('Error loading claim request page data:', error);
                 // En caso de error, usar datos mock como fallback
                 setPageData({
                     id: 0,
@@ -457,3 +456,4 @@ const ClaimRequest: React.FC = () => {
 };
 
 export default ClaimRequest;
+

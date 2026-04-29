@@ -19,7 +19,6 @@ const BannerComponent: React.FC<BannerComponentProps> = ({ className = '' }) => 
         const banner = await bannerService.getMainBanner();
         setBannerData(banner);
       } catch (error) {
-        console.error('Error fetching banner data:', error);
       } finally {
         setLoading(false);
       }
@@ -91,3 +90,4 @@ const BannerComponent: React.FC<BannerComponentProps> = ({ className = '' }) => 
 };
 
 export default BannerComponent;
+

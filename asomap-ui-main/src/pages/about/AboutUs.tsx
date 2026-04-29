@@ -21,7 +21,6 @@ const AboutUs: React.FC = () => {
         setAboutData(data as AboutResponse);
       } catch (error) {
         setError('Error al cargar los datos');
-        console.error('Error fetching about data:', error);
       } finally {
         setLoading(false);
       }
@@ -181,8 +180,8 @@ const AboutUs: React.FC = () => {
                     </motion.p>
                   ))} */}
 
-                    <motion.p
-                    variants={cardVariants}
+                    <motion.div
+                      variants={cardVariants}
                       className="text-base sm:text-lg leading-relaxed text-gray-600"
                       dangerouslySetInnerHTML={{ __html: quienesSomos.paragraphs }}
                     />
@@ -260,10 +259,10 @@ const AboutUs: React.FC = () => {
                     <FaHandHoldingHeart />
                     <h3 className="text-xl font-semibold text-primary mt-4 mb-4">{mision.title}</h3>
                   </div>
-                  <p className="text-gray-600">
+                  <div className="text-gray-600">
                     {Array.isArray(mision.description) ? (
                       mision.description.map((description, index) => (
-                        <motion.p
+                        <motion.div
                           key={index}
                           variants={cardVariants}
                           className="text-base sm:text-lg leading-relaxed text-gray-600"
@@ -271,13 +270,13 @@ const AboutUs: React.FC = () => {
                         />
                       ))
                     ) : (
-                      <motion.p
+                      <motion.div
                         variants={cardVariants}
                         className="text-base sm:text-lg leading-relaxed text-gray-600"
                         dangerouslySetInnerHTML={{ __html: mision.description }}
                       />
                     )}
-                  </p>
+                  </div>
                 </motion.div>
                 <motion.div
                   className="bg-gray-50 p-6 rounded-lg"
@@ -287,28 +286,24 @@ const AboutUs: React.FC = () => {
                     <FaHandHoldingHeart />
                     <h3 className="text-xl font-semibold text-primary mt-4 mb-4">{vision.title}</h3>
                   </div>
-                  <p className="text-gray-600">
+                  <div className="text-gray-600">
                     {Array.isArray(vision.description) ? (
                       vision.description.map((description, index) => (
-                        <motion.p
+                        <motion.div
                           key={index}
                           variants={cardVariants}
                           className="text-base sm:text-lg leading-relaxed text-gray-600"
-                        dangerouslySetInnerHTML={{ __html: description }}
-                          
-                        >
-                          {description}
-                        </motion.p>
+                          dangerouslySetInnerHTML={{ __html: description }}
+                        />
                       ))
                     ) : (
-                      <motion.p
+                      <motion.div
                         variants={cardVariants}
                         className="text-base sm:text-lg leading-relaxed text-gray-600"
                         dangerouslySetInnerHTML={{ __html: vision.description }}
-
                       />
                     )}
-                  </p>
+                  </div>
                 </motion.div>
               </div>
             </motion.div>
@@ -388,3 +383,4 @@ const AboutUs: React.FC = () => {
 };
 
 export default AboutUs;
+

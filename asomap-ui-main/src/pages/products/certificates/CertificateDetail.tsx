@@ -53,7 +53,6 @@ const CertificateDetail: React.FC = () => {
           setError('Certificado no encontrado');
         }
       } catch (err) {
-        console.error('Error fetching certificate data:', err);
         setError('Error al cargar los datos del certificado');
       } finally {
         setLoading(false);
@@ -244,3 +243,4 @@ const CertificateDetail: React.FC = () => {
 };
 
 export default CertificateDetail;
+

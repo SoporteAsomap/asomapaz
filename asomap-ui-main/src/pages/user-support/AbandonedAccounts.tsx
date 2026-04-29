@@ -30,11 +30,9 @@ const AbandonedAccounts: React.FC = () => {
         setError(null);
         
         const abandonedAccountsData = await abandonedAccountsService.getAbandonedAccounts();
-        console.log(abandonedAccountsData, "que carajo")
         setData(abandonedAccountsData);
         
       } catch (err) {
-        console.error('Error fetching abandoned accounts data:', err);
         setError('Error al cargar los datos de cuentas abandonadas');
       } finally {
         setLoading(false);
@@ -390,3 +388,5 @@ const AbandonedAccounts: React.FC = () => {
 };
 
 export default AbandonedAccounts;
+
+

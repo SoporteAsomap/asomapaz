@@ -19,8 +19,7 @@ const ConsumerLoan: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleButtonClick = (action: 'solicitar' | 'tarifario') => {
-    console.log(`Action: ${action}`);
+  const handleButtonClick = () => {
   };
 
   return (
@@ -55,13 +54,13 @@ const ConsumerLoan: React.FC = () => {
           <div className="flex justify-center gap-4 mb-16">
             <button
               className="bg-orange-500 text-white px-8 py-2 rounded-md hover:bg-orange-600 transition-colors"
-              onClick={() => handleButtonClick('solicitar')}
+              onClick={handleButtonClick}
             >
               Solicitar
             </button>
             <button
               className="bg-[#2D4394] text-white px-8 py-2 rounded-md hover:bg-blue-800 transition-colors"
-              onClick={() => handleButtonClick('tarifario')}
+              onClick={handleButtonClick}
             >
               Tarifario
             </button>

@@ -23,38 +23,37 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     /* Path Aliases */
-    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ],
       "@interfaces": [
-        "src/interfaces"
+        "./src/interfaces"
       ],
       "@components/*": [
-        "src/components/*"
+        "./src/components/*"
       ],
       "@components": [
-        "src/components"
+        "./src/components"
       ],
       "@api/*": [
-        "src/api/*"
+        "./src/api/*"
       ],
       "@api": [
-        "src/api"
+        "./src/api"
       ],
       "@data": [
-        "src/mocks"
+        "./src/mocks"
       ],
       "@utils": [
-        "src/utils"
+        "./src/utils"
       ],
       "@hooks": [
-        "src/hooks"
+        "./src/hooks"
       ],
       "@mocks": [
-        "src/mocks"
-      ],
+        "./src/mocks"
+      ]
     }
   },
   "include": [

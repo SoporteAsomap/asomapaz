@@ -96,8 +96,7 @@ const FinancialCertificate: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleButtonClick = (action: 'solicitar' | 'tarifario') => {
-    console.log(`Action: ${action}`);
+  const handleButtonClick = () => {
   };
 
   return (
@@ -127,13 +126,13 @@ const FinancialCertificate: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-8 sm:mb-12">
             <Button
               className="bg-primary-accent text-white px-4 py-2 rounded-lg hover:bg-primary transition-colors text-sm w-full sm:w-auto"
-              onClick={() => handleButtonClick('solicitar')}
+              onClick={handleButtonClick}
             >
               {financialCertificateData.cta.apply}
             </Button>
             <Button
               className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-accent transition-colors text-sm w-full sm:w-auto"
-              onClick={() => handleButtonClick('tarifario')}
+              onClick={handleButtonClick}
             >
               {financialCertificateData.cta.rates}
             </Button>

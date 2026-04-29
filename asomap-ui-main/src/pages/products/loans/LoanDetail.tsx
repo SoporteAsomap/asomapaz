@@ -47,7 +47,6 @@ const LoanDetail: React.FC = () => {
           setError('Préstamo no encontrado');
         }
       } catch (err) {
-        console.error('Error fetching loan data:', err);
         setError('Error al cargar los datos del préstamo');
       } finally {
         setLoading(false);
@@ -152,3 +151,4 @@ const LoanDetail: React.FC = () => {
 };
 
 export default LoanDetail;
+

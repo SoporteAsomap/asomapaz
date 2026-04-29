@@ -48,7 +48,6 @@ const SuggestionBox: React.FC = () => {
                 setProvinces(provincesData);
                 setPageData(pageDataResult);
             } catch (err) {
-                console.error('Error loading data:', err);
                 setError(err instanceof Error ? err.message : 'Error al cargar los datos');
                 
                 // En caso de error, usar datos mock como fallback para la página
@@ -154,7 +153,6 @@ const SuggestionBox: React.FC = () => {
                 message: ''
             });
         } catch (error) {
-            console.error('Error al enviar el formulario:', error);
             alert('Error al enviar el formulario. Por favor, intente nuevamente.');
         } finally {
             setIsSubmitting(false);
@@ -387,3 +385,4 @@ const SuggestionBox: React.FC = () => {
 };
 
 export default SuggestionBox;
+

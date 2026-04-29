@@ -49,7 +49,6 @@ const MapLocations: React.FC = () => {
         const data = await locationsService.getLocations();
         setLocations(data);
       } catch (error) {
-        console.error('Error fetching locations:', error);
         setLocations([]);
       } finally {
         setLoading(false);
@@ -90,8 +89,7 @@ const MapLocations: React.FC = () => {
           setIsLocating(false);
           panTo(currentLocation);
         },
-        (error) => {
-          console.error('Error getting location:', error);
+        () => {
           setIsLocating(false);
           // Show error message to user
           alert('No pudimos obtener tu ubicación. Por favor, permite el acceso a tu ubicación para una mejor experiencia.');
@@ -117,8 +115,7 @@ const MapLocations: React.FC = () => {
           setIsLocating(false);
           panTo({ lat: latitude, lng: longitude });
         },
-        (error) => {
-          console.error("Error getting location:", error.message);
+        () => {
           setIsLocating(false);
           // Fallback to default center if geolocation fails
         },
@@ -129,7 +126,6 @@ const MapLocations: React.FC = () => {
         }
       );
     } else {
-      console.error("Geolocation is not supported by this browser");
       setIsLocating(false);
       // Fallback to default center if geolocation fails
     }
@@ -438,3 +434,4 @@ const MapLocations: React.FC = () => {
 };
 
 export default MapLocations;
+

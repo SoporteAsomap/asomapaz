@@ -56,7 +56,6 @@ const Home: React.FC = () => {
         const data = await debitCardPromoService.getDebitCardPromo();
         setDebitCardData(data);
       } catch (error) {
-        console.error('Error fetching debit card promo data:', error);
         // No mostrar nada si la API falla
         setDebitCardData(null);
       } finally {
@@ -70,7 +69,6 @@ const Home: React.FC = () => {
         const data = await educationSectionService.getEducationSection();
         setEducationData(data);
       } catch (error) {
-        console.error('Error fetching education section data:', error);
         // No mostrar nada si la API falla
         setEducationData(null);
       } finally {
@@ -84,7 +82,6 @@ const Home: React.FC = () => {
         const data = await pekeAccountSummaryService.getPekeAccountSummary();
         setPekeAccountData(data);
       } catch (error) {
-        console.error('Error fetching peke account summary data:', error);
         // No mostrar nada si la API falla
         setPekeAccountData(null);
       } finally {
@@ -96,10 +93,8 @@ const Home: React.FC = () => {
       try {
         setProductLoading(true);
         const data = await productSectionService.getProductSection();
-        console.log('[Home] Product data received:', data);
         setProductData(data);
       } catch (error) {
-        console.error('Error fetching product section data:', error);
         // No mostrar nada si la API falla
         setProductData(null);
       } finally {
@@ -111,11 +106,8 @@ const Home: React.FC = () => {
       try {
         setSliderLoading(true);
         const data = await sliderService.getSlider();
-        console.log('[Home] Slider data received:', data);
-        console.log('[Home] Slider data length:', data.length);
         setSliderData(data);
       } catch (error) {
-        console.error('Error fetching slider data:', error);
         // No usar mock, solo manejar el error
         setSliderData([]);
       } finally {

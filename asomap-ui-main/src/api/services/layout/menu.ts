@@ -75,7 +75,6 @@ export const menuService = {
         },
       ];
     } catch (error) {
-      console.error('Error fetching product menu items:', error);
       return [];
     }
   },
@@ -91,8 +90,8 @@ export const menuService = {
         dynamicProducts: productSections,
       };
     } catch (error) {
-      console.error('Error fetching menu data:', error);
       return null;
     }
   }
 };
+

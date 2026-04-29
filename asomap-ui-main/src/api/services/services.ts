@@ -39,7 +39,6 @@ export const servicesService = {
         updatedAt: apiData.updated_at,
       };
     } catch (error) {
-      console.error('Error fetching services data:', error);
       return null;
     }
   },
@@ -48,3 +47,4 @@ export const servicesService = {
     return servicesService.getServicesPage();
   }
 };
+

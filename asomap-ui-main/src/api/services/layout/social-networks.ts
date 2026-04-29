@@ -26,7 +26,6 @@ export const socialNetworksService = {
                 results: response.data.results
             };
         } catch (error) {
-            console.error('❌ [ERROR] [SocialNetworksService] Error fetching social networks:', error);
             throw new Error('Error al obtener las redes sociales');
         }
     },
@@ -44,8 +43,8 @@ export const socialNetworksService = {
 
             return response.data;
         } catch (error) {
-            console.error('❌ [ERROR] [SocialNetworksService] Error fetching social network by ID:', error);
             throw new Error('Error al obtener la red social');
         }
     }
 };
+

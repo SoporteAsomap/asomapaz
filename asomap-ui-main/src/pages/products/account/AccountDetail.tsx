@@ -49,7 +49,6 @@ const AccountDetail: React.FC = () => {
           setError('Cuenta no encontrada');
         }
       } catch (err) {
-        console.error('Error fetching account data:', err);
         setError('Error al cargar los datos de la cuenta');
       } finally {
         setLoading(false);
@@ -171,3 +170,4 @@ const AccountDetail: React.FC = () => {
 };
 
 export default AccountDetail;
+
