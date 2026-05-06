@@ -1,10 +1,9 @@
 
 const ENV = import.meta.env.VITE_ENV || 'development';
 
-// Detect production environment by URL (for 192.168.54.10:8080)
-const isProductionByUrl = window.location.hostname === '192.168.54.10' ||
-                         window.location.hostname.includes('asomap.com') ||
-                         window.location.hostname.includes('production');
+// Detect production environment by URL — cualquier host que no sea localhost o 127.0.0.1
+const isProductionByUrl = window.location.hostname !== 'localhost' &&
+                          window.location.hostname !== '127.0.0.1';
 
 export const API_CONFIG = {
     // Environment
