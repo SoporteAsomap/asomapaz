@@ -91,19 +91,38 @@ services:
     profiles:
       - dev
 
+  # Frontend React — build de produccion
+  frontend-build:
+    build:
+      context: ./asomap-ui-main
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8080}
+        VITE_ENV: ${VITE_ENV:-production}
+        VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY:-}
+    container_name: asomap_frontend_build
+    command: sh -c "cp -r /app/build/. /output/ && echo 'Frontend build copiado correctamente'"
+    volumes:
+      - frontend_build:/output
+    profiles:
+      - prod
+
   # Nginx para producción (sin frontend-dev)
   nginx-prod:
-    build: 
+    build:
       context: ./asomap/nginx
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     container_name: asomap_nginx_prod
     restart: unless-stopped
     ports:
       - "8080:80"
     volumes:
-      - ./asomap-ui-main/build:/usr/share/nginx/html
+      - frontend_build:/usr/share/nginx/html
     depends_on:
-      - backend
+      frontend-build:
+        condition: service_completed_successfully
+      backend:
+        condition: service_started
     profiles:
       - prod
 
@@ -111,4 +130,5 @@ volumes:
   postgres_data:
   media_data:
   static_data:
+  frontend_build:
 

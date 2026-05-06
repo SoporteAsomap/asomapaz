@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ASOMAP — Guia de Despliegue a Produccion</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      color: #1a1a2e;
+      background: #fff;
+      line-height: 1.6;
+    }
+
+    /* ---- COVER PAGE ---- */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 60%, #1a1a2e 100%);
+      color: #fff;
+      text-align: center;
+      page-break-after: always;
+      padding: 40px;
+    }
+    .cover .logo-box {
+      width: 80px; height: 80px;
+      background: #e94560;
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; font-weight: 900;
+      color: #fff;
+      margin-bottom: 28px;
+      box-shadow: 0 8px 32px rgba(233,69,96,0.4);
+    }
+    .cover h1 { font-size: 38px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+    .cover h2 { font-size: 20px; font-weight: 400; color: #a0aec0; margin-bottom: 40px; }
+    .cover .badge-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 48px; }
+    .cover .badge {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .cover .meta { color: #718096; font-size: 12px; }
+    .cover .meta span { color: #a0aec0; font-weight: 600; }
+
+    /* ---- CONTENT ---- */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 56px;
+    }
+
+    @media print {
+      .page { padding: 24px 32px; }
+      .cover { height: 100vh; }
+    }
+
+    /* ---- SECTION HEADERS ---- */
+    .section-divider {
+      page-break-before: always;
+      padding-top: 32px;
+    }
+    .section-divider:first-child { page-break-before: avoid; }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid #e94560;
+    }
+    .section-num {
+      background: #e94560;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-title h2 { font-size: 20px; font-weight: 700; color: #0f3460; }
+
+    /* ---- SUBSECTIONS ---- */
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f3460;
+      margin: 20px 0 8px;
+      padding-left: 10px;
+      border-left: 3px solid #e94560;
+    }
+
+    p { margin-bottom: 10px; color: #2d3748; }
+
+    /* ---- CODE BLOCKS ---- */
+    pre {
+      background: #1a1a2e;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 12px;
+      overflow-x: auto;
+      margin: 10px 0 16px;
+      line-height: 1.7;
+      border-left: 4px solid #e94560;
+    }
+    code {
+      background: #edf2f7;
+      color: #c53030;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: 'Consolas', monospace;
+      font-size: 12px;
+    }
+    pre code { background: none; color: #e2e8f0; padding: 0; }
+
+    .comment { color: #68d391; }
+    .cmd { color: #90cdf4; }
+    .val { color: #fbd38d; }
+    .kw  { color: #fc8181; }
+
+    /* ---- TABLES ---- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+      font-size: 12px;
+    }
+    thead { background: #0f3460; color: #fff; }
+    thead th { padding: 10px 14px; text-align: left; font-weight: 600; }
+    tbody tr:nth-child(even) { background: #f7fafc; }
+    tbody td { padding: 9px 14px; border-bottom: 1px solid #e2e8f0; color: #2d3748; }
+    tbody td:first-child { font-family: 'Consolas', monospace; font-size: 11px; color: #c53030; }
+
+    /* ---- CALLOUT BOXES ---- */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 12.5px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout.warn  { background: #fffbeb; border-left: 4px solid #f6ad55; }
+    .callout.info  { background: #ebf8ff; border-left: 4px solid #4299e1; }
+    .callout.danger{ background: #fff5f5; border-left: 4px solid #fc8181; }
+    .callout.ok    { background: #f0fff4; border-left: 4px solid #68d391; }
+
+    /* ---- STEPS ---- */
+    .steps { list-style: none; padding: 0; }
+    .steps li {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .step-num {
+      background: #0f3460;
+      color: #fff;
+      font-weight: 700;
+      font-size: 11px;
+      min-width: 24px; height: 24px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .steps li p { margin: 0; }
+
+    /* ---- ARCH DIAGRAM ---- */
+    .arch {
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      margin: 16px 0;
+    }
+    .arch-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0;
+      flex-wrap: wrap;
+    }
+    .arch-box {
+      background: #0f3460;
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 12px;
+      font-weight: 600;
+      min-width: 110px;
+    }
+    .arch-box.accent { background: #e94560; }
+    .arch-box.gray   { background: #718096; }
+    .arch-box.green  { background: #2f855a; }
+    .arch-arrow { color: #a0aec0; font-size: 18px; font-weight: 700; }
+
+    /* ---- CHECKLIST ---- */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      padding: 6px 0 6px 28px;
+      position: relative;
+      color: #2d3748;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 12.5px;
+    }
+    .checklist li::before {
+      content: "☐";
+      position: absolute;
+      left: 0;
+      color: #e94560;
+      font-size: 16px;
+    }
+
+    /* ---- FOOTER ---- */
+    .footer {
+      text-align: center;
+      color: #a0aec0;
+      font-size: 11px;
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    /* ---- TOC ---- */
+    .toc { background: #f7fafc; border-radius: 10px; padding: 24px 32px; margin-bottom: 32px; }
+    .toc h3 { border-left: none; padding-left: 0; margin-top: 0; font-size: 15px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin: 6px 0; color: #0f3460; font-weight: 500; font-size: 12.5px; }
+    .toc li span { color: #718096; font-weight: 400; font-size: 11.5px; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
+    .col-box { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; }
+    .col-box h4 { font-size: 12px; font-weight: 700; color: #0f3460; margin-bottom: 8px; }
+    .col-box ul { padding-left: 16px; font-size: 12px; color: #4a5568; }
+    .col-box ul li { margin: 3px 0; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ PORTADA ═══════════════ -->
+<div class="cover">
+  <div class="logo-box">A</div>
+  <h1>ASOMAP</h1>
+  <h2>Guia Completa de Despliegue a Produccion</h2>
+  <div class="badge-row">
+    <span class="badge">Django 4 + DRF</span>
+    <span class="badge">React + Vite</span>
+    <span class="badge">PostgreSQL 15</span>
+    <span class="badge">Nginx</span>
+    <span class="badge">Docker Compose</span>
+  </div>
+  <div class="meta">
+    Proyecto: <span>asomap</span> &nbsp;|&nbsp;
+    Ultima actualizacion: <span>28 de Abril 2026</span> &nbsp;|&nbsp;
+    Version: <span>1.2</span>
+  </div>
+</div>
+
+<!-- ═══════════════ CONTENIDO ═══════════════ -->
+<div class="page">
+
+  <!-- TABLA DE CONTENIDOS -->
+  <div class="toc">
+    <h3>Tabla de Contenidos</h3>
+    <ol>
+      <li>Arquitectura del Sistema <span>— componentes y flujo de datos</span></li>
+      <li>Requisitos del Servidor <span>— hardware, SO y software</span></li>
+      <li>Preparacion del Servidor <span>— instalacion de Docker y dependencias</span></li>
+      <li>Configuracion del Codigo Fuente <span>— clonar, variables de entorno</span></li>
+      <li>Configuracion del Frontend <span>— build de produccion</span></li>
+      <li>Configuracion del Backend para Produccion <span>— Gunicorn, settings</span></li>
+      <li>Despliegue con Docker Compose <span>— levantar todos los servicios</span></li>
+      <li>Verificacion y Pruebas <span>— endpoints y health checks</span></li>
+      <li>Administracion Post-Despliegue <span>— superusuario, datos iniciales</span></li>
+      <li>Dominio y SSL (Opcional) <span>— certificado HTTPS con Let's Encrypt</span></li>
+      <li>Monitoreo y Mantenimiento <span>— logs, backups y actualizaciones</span></li>
+      <li>Solucion de Problemas <span>— errores comunes y como resolverlos</span></li>
+      <li>Checklist Final <span>— lista de verificacion antes de ir a produccion</span></li>
+    </ol>
+  </div>
+
+  <!-- ════ SECCION 1 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">1</div>
+      <h2>Arquitectura del Sistema</h2>
+    </div>
+
+    <div class="arch">
+      <div class="arch-row">
+        <div class="arch-box accent">Usuario / Navegador</div>
+      </div>
+      <div class="arch-row"><div class="arch-arrow">↓ Puerto 80 / 443</div></div>
+      <div class="arch-row">
+        <div class="arch-box">Nginx (puerto 8080)</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-arrow">↓ /api/ &nbsp;&nbsp;</div>
+        <div class="arch-arrow">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+        <div class="arch-arrow">&nbsp;&nbsp; / (frontend)</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-box green">Django Backend<br/>(puerto 8000)</div>
+        <div style="width:60px"></div>
+        <div class="arch-box gray">React Build<br/>(archivos estaticos)</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-arrow">↓</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-box">PostgreSQL 15<br/>(puerto 5433)</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-box">
+        <h4>Servicios Docker</h4>
+        <ul>
+          <li><strong>db</strong> — PostgreSQL 15 (volumen persistente)</li>
+          <li><strong>backend</strong> — Django + Gunicorn :8000</li>
+          <li><strong>nginx-prod</strong> — Reverse proxy :8080</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h4>Volumenes Docker</h4>
+        <ul>
+          <li><strong>postgres_data</strong> — datos de la BD</li>
+          <li><strong>media_data</strong> — archivos subidos</li>
+          <li><strong>static_data</strong> — archivos estaticos Django</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ SECCION 2 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">2</div>
+      <h2>Requisitos del Servidor</h2>
+    </div>
+
+    <table>
+      <thead><tr><th>Componente</th><th>Minimo</th><th>Recomendado</th></tr></thead>
+      <tbody>
+        <tr><td>CPU</td><td>2 nucleos</td><td>4 nucleos</td></tr>
+        <tr><td>RAM</td><td>2 GB</td><td>4 GB</td></tr>
+        <tr><td>Disco</td><td>20 GB SSD</td><td>50 GB SSD</td></tr>
+        <tr><td>SO</td><td>Ubuntu 20.04 LTS</td><td>Ubuntu 22.04 LTS</td></tr>
+        <tr><td>Docker</td><td>24.x</td><td>26.x (ultima)</td></tr>
+        <tr><td>Docker Compose</td><td>2.x</td><td>2.x (ultima)</td></tr>
+        <tr><td>Git</td><td>2.x</td><td>2.x</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout ok">
+      <div class="callout-icon">v</div>
+      <div><strong>100% Docker:</strong> No necesitas instalar Node.js, Yarn ni Python en el servidor. El build del frontend y el backend corren completamente dentro de contenedores Docker. Solo necesitas Docker, Docker Compose y Git.</div>
+    </div>
+  </div>
+
+  <!-- ════ SECCION 3 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">3</div>
+      <h2>Preparacion del Servidor</h2>
+    </div>
+
+    <h3>3.1 Actualizar el sistema</h3>
+    <pre><span class="comment"># Conectarse al servidor via SSH</span>
+ssh usuario@IP_DEL_SERVIDOR
+
+<span class="comment"># Actualizar paquetes del sistema</span>
+sudo apt update && sudo apt upgrade -y</pre>
+
+    <h3>3.2 Instalar Docker</h3>
+    <pre><span class="comment"># Instalar dependencias</span>
+sudo apt install -y ca-certificates curl gnupg lsb-release
+
+<span class="comment"># Agregar clave GPG oficial de Docker</span>
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+<span class="comment"># Agregar repositorio de Docker</span>
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+<span class="comment"># Instalar Docker Engine y Docker Compose</span>
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+<span class="comment"># Agregar tu usuario al grupo docker (evita usar sudo)</span>
+sudo usermod -aG docker $USER
+newgrp docker
+
+<span class="comment"># Verificar instalacion</span>
+docker --version
+docker compose version</pre>
+
+    <h3>3.3 Instalar Git</h3>
+    <pre>sudo apt install -y git
+git --version</pre>
+
+    <h3>3.4 Configurar Firewall (UFW)</h3>
+    <pre><span class="comment"># Permitir SSH, HTTP y el puerto de la app</span>
+sudo ufw allow OpenSSH
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 8080/tcp   <span class="comment"># puerto de la app</span>
+sudo ufw enable
+sudo ufw status</pre>
+  </div>
+
+  <!-- ════ SECCION 4 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">4</div>
+      <h2>Configuracion del Codigo Fuente</h2>
+    </div>
+
+    <h3>4.1 Clonar el repositorio</h3>
+    <pre><span class="comment"># Ir a la carpeta donde se alojara la aplicacion</span>
+cd /opt
+sudo mkdir asomap
+sudo chown $USER:$USER asomap
+cd asomap
+
+<span class="comment"># Clonar el repositorio (reemplaza la URL con la tuya)</span>
+git clone https://github.com/TU_USUARIO/asomap.git .
+
+<span class="comment"># Verificar que los directorios esten presentes</span>
+ls -la
+<span class="comment"># Debe mostrar: asomap-backend-jazzmin/  asomap-ui-main/  asomap/  docker-compose.yml</span></pre>
+
+    <h3>4.2 Configurar el archivo .env</h3>
+    <p>Crea el archivo <code>.env</code> en la raiz del proyecto (<code>/opt/asomap/.env</code>):</p>
+    <pre><span class="comment"># Crear el archivo .env</span>
+nano /opt/asomap/.env</pre>
+
+    <p>Pega el siguiente contenido y <strong>ajusta los valores</strong> segun tu servidor:</p>
+    <pre><span class="comment"># ============================================================
+# BASE DE DATOS
+# ============================================================</span>
+<span class="val">DB_USER</span>=asomap_user
+<span class="val">DB_PASS</span>=TU_PASSWORD_SEGURO_AQUI      <span class="comment"># CAMBIAR — usa uno fuerte</span>
+<span class="val">DB_NAME</span>=asomap
+<span class="val">DB_HOST</span>=db
+<span class="val">DB_PORT</span>=5432
+<span class="val">USE_DOCKER_DB</span>=True
+
+<span class="comment"># ============================================================
+# DJANGO
+# ============================================================</span>
+<span class="val">DEBUG</span>=False
+<span class="val">SECRET_KEY</span>=TU_SECRET_KEY_UNICO_AQUI   <span class="comment"># CAMBIAR — genera uno nuevo</span>
+
+<span class="comment"># ============================================================
+# SERVIDOR — cambia 192.168.54.10 por la IP real del servidor
+# ============================================================</span>
+<span class="val">SERVER_IP</span>=192.168.54.10
+<span class="val">SERVER_PORT</span>=8080
+<span class="val">SERVER_PROTOCOL</span>=http
+
+<span class="comment"># Hosts permitidos</span>
+<span class="val">ALLOWED_HOSTS</span>=127.0.0.1,0.0.0.0,192.168.54.10
+
+<span class="comment"># CORS</span>
+<span class="val">CORS_ALLOWED_ORIGINS</span>=http://192.168.54.10:8080,http://localhost:8080
+
+<span class="comment"># CSRF</span>
+<span class="val">CSRF_TRUSTED_ORIGINS</span>=http://192.168.54.10:8080,http://192.168.54.10
+
+<span class="comment"># ============================================================
+# FRONTEND
+# ============================================================</span>
+<span class="val">VITE_API_URL</span>=http://192.168.54.10:8080
+<span class="val">VITE_ENV</span>=production
+<span class="val">VITE_GOOGLE_MAPS_API_KEY</span>=TU_GOOGLE_MAPS_KEY   <span class="comment"># opcional</span>
+
+<span class="comment"># ============================================================
+# MEDIA y ESTATICOS
+# ============================================================</span>
+<span class="val">MEDIA_ROOT</span>=/app/media
+<span class="val">STATIC_ROOT</span>=/app/staticfiles</pre>
+
+    <div class="callout warn">
+      <div class="callout-icon">!</div>
+      <div><strong>Importante:</strong> Genera una SECRET_KEY segura con el siguiente comando y usala en el .env:
+        <br/><code>python3 -c "import secrets; print(secrets.token_urlsafe(50))"</code>
+      </div>
+    </div>
+
+    <h3>4.3 Proteger el archivo .env</h3>
+    <pre><span class="comment"># Solo el propietario puede leerlo</span>
+chmod 600 /opt/asomap/.env</pre>
+  </div>
+
+  <!-- ════ SECCION 5 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">5</div>
+      <h2>Configuracion del Frontend (Build automatico con Docker)</h2>
+    </div>
+
+    <div class="callout ok">
+      <div class="callout-icon">v</div>
+      <div><strong>No necesitas instalar Node.js ni Yarn en el servidor.</strong> El servicio <code>frontend-build</code> en Docker Compose compila el frontend automaticamente dentro de un contenedor y deja los archivos listos en un volumen compartido con Nginx.</div>
+    </div>
+
+    <h3>Como funciona el flujo automatico</h3>
+    <div class="arch">
+      <div class="arch-row">
+        <div class="arch-box accent">docker compose --profile prod up</div>
+      </div>
+      <div class="arch-row"><div class="arch-arrow">↓</div></div>
+      <div class="arch-row">
+        <div class="arch-box">frontend-build (Node 18)<br/>yarn install + yarn build</div>
+      </div>
+      <div class="arch-row"><div class="arch-arrow">↓ copia /app/build → volumen frontend_build</div></div>
+      <div class="arch-row">
+        <div class="arch-box green">nginx-prod espera a que frontend-build termine<br/>(service_completed_successfully)</div>
+      </div>
+      <div class="arch-row"><div class="arch-arrow">↓ monta volumen frontend_build</div></div>
+      <div class="arch-row">
+        <div class="arch-box">Nginx sirve los archivos estaticos</div>
+      </div>
+    </div>
+
+    <h3>5.1 Verificar que VITE_API_URL esta en el .env</h3>
+    <p>La URL de la API se pasa al build como argumento en tiempo de compilacion. Ya la configuraste en la seccion 4, pero verifica que este presente:</p>
+    <pre><span class="comment"># Verificar la variable en el .env raiz</span>
+grep VITE_API_URL /opt/asomap/.env
+<span class="comment"># Debe mostrar: VITE_API_URL=http://192.168.54.10:8080</span></pre>
+
+    <div class="callout info">
+      <div class="callout-icon">i</div>
+      <div>Vite bake la URL de la API dentro del bundle JavaScript en tiempo de build. Si cambias <code>VITE_API_URL</code> despues del despliegue, debes reconstruir la imagen del frontend con <code>docker compose build frontend-build</code> y reiniciar.</div>
+    </div>
+
+    <h3>5.2 Reconstruir el frontend tras cambios</h3>
+    <p>Si modificas el codigo del frontend o cambias <code>VITE_API_URL</code>:</p>
+    <pre><span class="comment"># Reconstruir solo el frontend (Docker descarga las dependencias y compila)</span>
+docker compose build frontend-build
+
+<span class="comment"># Reiniciar para que nginx tome el nuevo build</span>
+docker compose --profile prod up -d --force-recreate frontend-build nginx-prod</pre>
+  </div>
+
+  <!-- ════ SECCION 6 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">6</div>
+      <h2>Configuracion del Backend para Produccion</h2>
+    </div>
+
+    <div class="callout danger">
+      <div class="callout-icon">!</div>
+      <div><strong>Accion requerida:</strong> El archivo <code>start.sh</code> actualmente usa <code>python manage.py runserver</code> que NO es apto para produccion. Debes cambiarlo a <strong>Gunicorn</strong> antes de hacer el despliegue.</div>
+    </div>
+
+    <h3>6.1 Modificar start.sh para usar Gunicorn</h3>
+    <p>Edita la ultima linea del archivo <code>asomap-backend-jazzmin/start.sh</code>:</p>
+    <pre><span class="comment"># Abrir el archivo</span>
+nano /opt/asomap/asomap-backend-jazzmin/start.sh
+
+<span class="comment"># Cambiar la ULTIMA linea de:</span>
+exec python manage.py runserver 0.0.0.0:8000
+
+<span class="comment"># Por esta (Gunicorn con 3 workers):</span>
+exec gunicorn config.wsgi:application \
+    --bind 0.0.0.0:8000 \
+    --workers 3 \
+    --timeout 120 \
+    --access-logfile - \
+    --error-logfile -</pre>
+
+    <h3>6.2 Verificar que Gunicorn esta en requirements.txt</h3>
+    <pre><span class="comment"># Verificar que gunicorn aparece en requirements.txt</span>
+grep gunicorn /opt/asomap/asomap-backend-jazzmin/requirements.txt
+
+<span class="comment"># Si NO aparece, agregarlo:</span>
+echo "gunicorn==21.2.0" >> /opt/asomap/asomap-backend-jazzmin/requirements.txt</pre>
+
+    <h3>6.3 Verificar MEDIA_ROOT en settings.py</h3>
+    <p>El <code>settings.py</code> tiene <code>MEDIA_ROOT = '/home/media'</code> que no coincide con el volumen Docker. Confirma que el docker-compose.yml sobreescribe esta variable:</p>
+    <pre><span class="comment"># En docker-compose.yml ya esta configurado como variable de entorno:</span>
+<span class="comment"># - MEDIA_ROOT=/app/media</span>
+<span class="comment"># Esto sobreescribe el valor del settings.py. No hay que cambiar nada mas.</span></pre>
+
+    <div class="callout info">
+      <div class="callout-icon">i</div>
+      <div>El <code>settings.py</code> tiene <code>CORS_ALLOW_ALL_ORIGINS = True</code> y <code>ALLOWED_HOSTS = ['*']</code>. Esto es flexible pero menos seguro. En una red interna cerrada esta aceptable. Para produccion en internet publico, considera restringirlos via las variables de entorno del .env.</div>
+    </div>
+  </div>
+
+  <!-- ════ SECCION 7 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">7</div>
+      <h2>Despliegue con Docker Compose</h2>
+    </div>
+
+    <h3>7.1 Ir al directorio raiz del proyecto</h3>
+    <pre>cd /opt/asomap</pre>
+
+    <h3>7.2 Construir las imagenes Docker</h3>
+    <pre><span class="comment"># Construir todas las imagenes (primera vez tarda varios minutos)</span>
+docker compose build
+
+<span class="comment"># Si quieres ver el progreso detallado:</span>
+docker compose build --no-cache --progress=plain</pre>
+
+    <h3>7.3 Levantar los servicios en modo produccion</h3>
+    <pre><span class="comment"># Levantar con el perfil de produccion (nginx-prod en lugar de nginx+frontend-dev)</span>
+docker compose --profile prod up -d
+
+<span class="comment"># Verificar que los contenedores estan corriendo</span>
+docker compose ps</pre>
+
+    <p>Debes ver algo como esto:</p>
+    <pre>NAME                    IMAGE      STATUS                      PORTS
+asomap_postgres         postgres   Up (healthy)                0.0.0.0:5433->5432/tcp
+asomap_backend          asomap...  Up (healthy)                0.0.0.0:8000->8000/tcp
+asomap_frontend_build   asomap...  Exited (0)                  <span class="comment"># normal — termina al copiar el build</span>
+asomap_nginx_prod       nginx...   Up                          0.0.0.0:8080->80/tcp</pre>
+
+    <div class="callout info">
+      <div class="callout-icon">i</div>
+      <div>Es normal que <code>asomap_frontend_build</code> aparezca como <strong>Exited (0)</strong>. Ese contenedor solo existe para compilar el frontend y copiar los archivos al volumen. El codigo de salida 0 significa que termino exitosamente.</div>
+    </div>
+
+    <h3>7.4 Ver los logs en tiempo real</h3>
+    <pre><span class="comment"># Todos los servicios</span>
+docker compose logs -f
+
+<span class="comment"># Solo el backend</span>
+docker compose logs -f backend
+
+<span class="comment"># Solo la base de datos</span>
+docker compose logs -f db</pre>
+
+    <div class="callout ok">
+      <div class="callout-icon">v</div>
+      <div>Cuando el backend este listo veras en los logs: <code>Backend Django iniciado correctamente!</code> y <code>Servidor disponible en http://0.0.0.0:8000</code></div>
+    </div>
+
+    <h3>7.5 Comandos utiles de Docker Compose</h3>
+    <table>
+      <thead><tr><th>Comando</th><th>Descripcion</th></tr></thead>
+      <tbody>
+        <tr><td>docker compose ps</td><td>Ver estado de todos los contenedores</td></tr>
+        <tr><td>docker compose stop</td><td>Detener todos los servicios</td></tr>
+        <tr><td>docker compose start</td><td>Iniciar servicios detenidos</td></tr>
+        <tr><td>docker compose restart backend</td><td>Reiniciar solo el backend</td></tr>
+        <tr><td>docker compose down</td><td>Detener y eliminar contenedores (volumenes se conservan)</td></tr>
+        <tr><td>docker compose down -v</td><td>Detener y eliminar todo incluyendo volumenes (CUIDADO)</td></tr>
+        <tr><td>docker compose exec backend bash</td><td>Entrar al contenedor del backend</td></tr>
+        <tr><td>docker compose pull</td><td>Actualizar imagenes base</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ SECCION 8 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">8</div>
+      <h2>Verificacion y Pruebas</h2>
+    </div>
+
+    <h3>8.1 Health Check del backend</h3>
+    <pre><span class="comment"># Verificar que el backend responde</span>
+curl http://192.168.54.10:8080/health/
+<span class="comment"># Respuesta esperada: {"status": "healthy", ...}</span>
+
+<span class="comment"># Verificar directamente el backend (sin nginx)</span>
+curl http://192.168.54.10:8000/health/</pre>
+
+    <h3>8.2 Verificar la API</h3>
+    <pre><span class="comment"># Listar endpoints disponibles</span>
+curl http://192.168.54.10:8080/api/
+
+<span class="comment"># Swagger UI (documentacion interactiva)</span>
+<span class="comment"># Abrir en navegador: http://192.168.54.10:8080/api/docs/</span></pre>
+
+    <h3>8.3 Verificar el Panel de Administracion</h3>
+    <pre><span class="comment"># Abrir en navegador:</span>
+http://192.168.54.10:8080/admin/
+
+<span class="comment"># Usuario por defecto creado automaticamente por start.sh:</span>
+<span class="comment"># Usuario: admin</span>
+<span class="comment"># Password: admin123  (CAMBIAR INMEDIATAMENTE)</span></pre>
+
+    <div class="callout danger">
+      <div class="callout-icon">!</div>
+      <div><strong>Seguridad critica:</strong> Cambia la contrasena del usuario admin inmediatamente despues del primer despliegue desde el panel de administracion o con el comando de la seccion 9.2.</div>
+    </div>
+
+    <h3>8.4 Verificar el Frontend</h3>
+    <pre><span class="comment"># Abrir en navegador:</span>
+http://192.168.54.10:8080/
+
+<span class="comment"># El frontend React debe cargarse correctamente</span></pre>
+  </div>
+
+  <!-- ════ SECCION 9 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">9</div>
+      <h2>Administracion Post-Despliegue</h2>
+    </div>
+
+    <h3>9.1 Cambiar contrasena del superusuario admin</h3>
+    <pre><span class="comment"># Entrar al contenedor del backend</span>
+docker compose exec backend python manage.py changepassword admin</pre>
+
+    <h3>9.2 Crear un nuevo superusuario</h3>
+    <pre>docker compose exec backend python manage.py createsuperuser</pre>
+
+    <h3>9.3 Ejecutar migraciones manualmente (si es necesario)</h3>
+    <pre><span class="comment"># Las migraciones se ejecutan automaticamente al iniciar el contenedor,
+# pero si necesitas ejecutarlas manualmente:</span>
+docker compose exec backend python manage.py migrate --noinput</pre>
+
+    <h3>9.4 Recolectar archivos estaticos manualmente</h3>
+    <pre>docker compose exec backend python manage.py collectstatic --noinput</pre>
+
+    <h3>9.5 Crear datos iniciales (si la BD esta vacia)</h3>
+    <pre><span class="comment"># Los datos iniciales se crean automaticamente en start.sh si la BD esta vacia.
+# Para recrearlos manualmente:</span>
+docker compose exec backend python manage.py create_about_data --force
+docker compose exec backend python manage.py create_home_data --force
+docker compose exec backend python manage.py create_services --force
+docker compose exec backend python manage.py create_products --force</pre>
+
+    <h3>9.6 Verificar el health check interno</h3>
+    <pre>docker compose exec backend python manage.py health_check</pre>
+
+    <h3>9.7 Backup de la base de datos</h3>
+    <pre><span class="comment"># Crear backup de PostgreSQL</span>
+docker compose exec db pg_dump -U asomap_user asomap > backup_$(date +%Y%m%d_%H%M).sql
+
+<span class="comment"># Restaurar backup</span>
+docker compose exec -T db psql -U asomap_user asomap < backup_20260428.sql</pre>
+  </div>
+
+  <!-- ════ SECCION 10 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">10</div>
+      <h2>Configuracion de Dominio y SSL (HTTPS)</h2>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-icon">i</div>
+      <div>Esta seccion aplica cuando ASOMAP tenga un dominio registrado (ej: <strong>asomap.com</strong>) y el servidor sea accesible desde internet. El certificado SSL es <strong>gratuito</strong> con Let's Encrypt.</div>
+    </div>
+
+    <h3>10.1 Paso 1 — Apuntar el dominio al servidor</h3>
+    <p>En el panel del proveedor de dominio (GoDaddy, Namecheap, Cloudflare, etc.), crear los siguientes registros DNS:</p>
+
+    <table>
+      <thead><tr><th>Tipo</th><th>Nombre</th><th>Valor</th><th>TTL</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>@</td><td>IP_DEL_SERVIDOR (ej: 45.32.100.15)</td><td>3600</td></tr>
+        <tr><td>A</td><td>www</td><td>IP_DEL_SERVIDOR (ej: 45.32.100.15)</td><td>3600</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <div class="callout-icon">!</div>
+      <div>Los cambios de DNS pueden tardar entre 15 minutos y 48 horas en propagarse. Verifica que el dominio apunta al servidor antes de continuar con Certbot.</div>
+    </div>
+
+    <pre><span class="comment"># Verificar que el dominio ya apunta al servidor</span>
+ping asomap.com
+<span class="comment"># Debe mostrar la IP del servidor</span></pre>
+
+    <h3>10.2 Paso 2 — Actualizar el .env con el dominio</h3>
+    <pre><span class="comment"># Editar el .env en el servidor</span>
+nano /opt/asomap/.env</pre>
+
+    <p>Cambiar estas variables:</p>
+    <pre><span class="val">SERVER_IP</span>=asomap.com
+<span class="val">SERVER_PORT</span>=443
+<span class="val">SERVER_PROTOCOL</span>=https
+
+<span class="val">ALLOWED_HOSTS</span>=127.0.0.1,localhost,asomap.com,www.asomap.com
+<span class="val">CORS_ALLOWED_ORIGINS</span>=https://asomap.com,https://www.asomap.com
+<span class="val">CSRF_TRUSTED_ORIGINS</span>=https://asomap.com,https://www.asomap.com
+<span class="val">VITE_API_URL</span>=https://asomap.com</pre>
+
+    <h3>10.3 Paso 3 — Reconstruir el frontend con la nueva URL</h3>
+    <p>La URL de la API queda grabada dentro del bundle de React en tiempo de build, por lo que hay que reconstruir:</p>
+    <pre><span class="comment"># Reconstruir el frontend con la nueva VITE_API_URL</span>
+cd /opt/asomap
+docker compose build frontend-build
+
+<span class="comment"># Reiniciar nginx y frontend-build para aplicar los cambios</span>
+docker compose --profile prod up -d --force-recreate frontend-build nginx-prod</pre>
+
+    <h3>10.4 Paso 4 — Instalar Certbot para SSL gratuito</h3>
+    <pre><span class="comment"># Instalar Nginx del sistema y Certbot (fuera de Docker)</span>
+sudo apt install -y nginx certbot python3-certbot-nginx
+
+<span class="comment"># Detener el Nginx de Docker para liberar el puerto 80</span>
+docker compose stop nginx-prod</pre>
+
+    <h3>10.5 Paso 5 — Obtener el certificado SSL</h3>
+    <pre><span class="comment"># Certbot obtiene el certificado y configura Nginx automaticamente</span>
+sudo certbot --nginx -d asomap.com -d www.asomap.com
+
+<span class="comment"># Verificar que la renovacion automatica funciona</span>
+sudo certbot renew --dry-run</pre>
+
+    <div class="callout ok">
+      <div class="callout-icon">v</div>
+      <div>Let's Encrypt renueva el certificado automaticamente cada 90 dias. No necesitas hacer nada manualmente.</div>
+    </div>
+
+    <h3>10.6 Paso 6 — Configurar Nginx del sistema como proxy</h3>
+    <pre><span class="comment"># Crear archivo de configuracion para ASOMAP</span>
+sudo nano /etc/nginx/sites-available/asomap</pre>
+
+    <p>Contenido del archivo:</p>
+    <pre>server {
+    listen 443 ssl;
+    server_name asomap.com www.asomap.com;
+
+    ssl_certificate     /etc/letsencrypt/live/asomap.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/asomap.com/privkey.pem;
+
+    <span class="comment"># Proxy hacia el contenedor Docker de Nginx</span>
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+<span class="comment"># Redirigir HTTP a HTTPS automaticamente</span>
+server {
+    listen 80;
+    server_name asomap.com www.asomap.com;
+    return 301 https://$host$request_uri;
+}</pre>
+
+    <pre><span class="comment"># Activar la configuracion</span>
+sudo ln -s /etc/nginx/sites-available/asomap /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+
+<span class="comment"># Volver a levantar el contenedor Docker de Nginx</span>
+docker compose --profile prod up -d nginx-prod</pre>
+
+    <h3>10.7 Verificacion final con dominio</h3>
+    <pre><span class="comment"># Verificar HTTPS</span>
+curl -s -o /dev/null -w "%{http_code}" https://asomap.com/health/
+<span class="comment"># Debe responder: 200</span>
+
+<span class="comment"># Verificar redireccion HTTP → HTTPS</span>
+curl -s -o /dev/null -w "%{http_code}" http://asomap.com/
+<span class="comment"># Debe responder: 301</span></pre>
+
+    <div class="two-col">
+      <div class="col-box">
+        <h4>Flujo con IP local</h4>
+        <ul>
+          <li>Sin certificado SSL</li>
+          <li>URL: <code>http://192.168.1.50:8080</code></li>
+          <li>Solo accesible en la red interna</li>
+          <li>Puerto 8080 abierto en el firewall</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h4>Flujo con dominio publico</h4>
+        <ul>
+          <li>SSL gratuito con Let's Encrypt</li>
+          <li>URL: <code>https://asomap.com</code></li>
+          <li>Accesible desde cualquier lugar</li>
+          <li>Puertos 80 y 443 abiertos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ SECCION 11 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">11</div>
+      <h2>Monitoreo y Mantenimiento</h2>
+    </div>
+
+    <h3>11.1 Ver logs</h3>
+    <pre><span class="comment"># Logs en tiempo real de todos los servicios</span>
+docker compose logs -f
+
+<span class="comment"># Ultimas 100 lineas del backend</span>
+docker compose logs --tail=100 backend
+
+<span class="comment"># Logs de errores del backend</span>
+docker compose logs backend 2>&1 | grep -i error</pre>
+
+    <h3>11.2 Monitorear recursos del sistema</h3>
+    <pre><span class="comment"># Ver consumo de CPU y RAM de los contenedores</span>
+docker stats
+
+<span class="comment"># Ver espacio en disco</span>
+df -h
+docker system df</pre>
+
+    <h3>11.3 Actualizar la aplicacion</h3>
+    <pre><span class="comment"># 1. Descargar cambios del repositorio</span>
+cd /opt/asomap
+git pull origin main
+
+<span class="comment"># 2. Reconstruir solo el backend (si hubo cambios en Python/Django)</span>
+docker compose build backend
+docker compose --profile prod up -d --force-recreate backend
+
+<span class="comment"># 3. Reconstruir el frontend (si hubo cambios en React o en VITE_API_URL)</span>
+docker compose build frontend-build
+docker compose --profile prod up -d --force-recreate frontend-build nginx-prod
+
+<span class="comment"># 4. Reconstruir todo a la vez</span>
+docker compose --profile prod build
+docker compose --profile prod up -d --force-recreate</pre>
+
+    <h3>11.4 Programar backups automaticos (crontab)</h3>
+    <pre><span class="comment"># Abrir el crontab del usuario</span>
+crontab -e
+
+<span class="comment"># Agregar esta linea para backup diario a las 2 AM</span>
+0 2 * * * cd /opt/asomap && docker compose exec -T db \
+  pg_dump -U asomap_user asomap > /opt/backups/asomap_$(date +\%Y\%m\%d).sql</pre>
+
+    <pre><span class="comment"># Crear carpeta de backups</span>
+sudo mkdir -p /opt/backups
+sudo chown $USER:$USER /opt/backups</pre>
+
+    <h3>11.5 Limpiar Docker periodicamente</h3>
+    <pre><span class="comment"># Limpiar imagenes y contenedores no utilizados</span>
+docker system prune -f
+
+<span class="comment"># Limpiar todo (CUIDADO: no elimina volumenes con datos)</span>
+docker system prune -a -f</pre>
+  </div>
+
+  <!-- ════ SECCION 12 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">12</div>
+      <h2>Solucion de Problemas</h2>
+    </div>
+
+    <table>
+      <thead><tr><th>Error</th><th>Causa probable</th><th>Solucion</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Backend no inicia / health check falla</td>
+          <td>PostgreSQL no esta listo o migraciones fallaron</td>
+          <td>Ver logs: <code>docker compose logs backend</code>. Asegurarse que db este healthy antes.</td>
+        </tr>
+        <tr>
+          <td>Error 500 en la API</td>
+          <td>Falta variable de entorno o migracion pendiente</td>
+          <td>Revisar logs del backend. Ejecutar <code>docker compose exec backend python manage.py migrate</code></td>
+        </tr>
+        <tr>
+          <td>Frontend muestra pantalla en blanco</td>
+          <td>frontend-build fallo o VITE_API_URL incorrecta</td>
+          <td>Ver logs: <code>docker compose logs frontend-build</code>. Verificar que <code>VITE_API_URL</code> esta en el .env. Reconstruir con <code>docker compose build frontend-build</code>.</td>
+        </tr>
+        <tr>
+          <td>nginx-prod no inicia (espera frontend-build)</td>
+          <td>frontend-build termino con error (codigo distinto de 0)</td>
+          <td><code>docker compose logs frontend-build</code> para ver el error de compilacion. Corregir el codigo y reconstruir.</td>
+        </tr>
+        <tr>
+          <td>CORS error en el navegador</td>
+          <td>CORS_ALLOWED_ORIGINS no incluye el origen del frontend</td>
+          <td>Agregar la URL del frontend en <code>CORS_ALLOWED_ORIGINS</code> del .env y reiniciar.</td>
+        </tr>
+        <tr>
+          <td>Archivos de media no se ven</td>
+          <td>MEDIA_ROOT no apunta al volumen correcto</td>
+          <td>Verificar en .env: <code>MEDIA_ROOT=/app/media</code>. Revisar volumen <code>media_data</code>.</td>
+        </tr>
+        <tr>
+          <td>Puerto 8080 ocupado</td>
+          <td>Otro proceso usa el puerto</td>
+          <td><code>sudo lsof -i :8080</code> para ver que proceso lo usa. Detenerlo o cambiar el puerto en docker-compose.yml.</td>
+        </tr>
+        <tr>
+          <td>Container "Exited" inmediatamente</td>
+          <td>Error en start.sh o configuracion</td>
+          <td><code>docker compose logs backend</code> para ver el error exacto.</td>
+        </tr>
+        <tr>
+          <td>No puedo conectar a la BD</td>
+          <td>Credenciales incorrectas o contenedor de DB caido</td>
+          <td>Verificar DB_USER, DB_PASS y DB_NAME en .env. <code>docker compose ps</code> para ver estado de db.</td>
+        </tr>
+        <tr>
+          <td>Admin panel no carga CSS</td>
+          <td>collectstatic no se ejecuto</td>
+          <td><code>docker compose exec backend python manage.py collectstatic --noinput</code></td>
+        </tr>
+        <tr>
+          <td>git pull falla: conflictos</td>
+          <td>Cambios locales no commiteados</td>
+          <td><code>git stash</code> para guardar cambios temporalmente, luego <code>git pull</code>, luego <code>git stash pop</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Comandos de diagnostico rapido</h3>
+    <pre><span class="comment"># Estado completo del sistema</span>
+docker compose ps
+docker compose logs --tail=50 backend
+docker stats --no-stream
+
+<span class="comment"># Conectarse al backend para diagnostico</span>
+docker compose exec backend python manage.py check --deploy
+
+<span class="comment"># Verificar la base de datos</span>
+docker compose exec db psql -U asomap_user -d asomap -c "\dt"</pre>
+  </div>
+
+  <!-- ════ SECCION 13 ════ -->
+  <div class="section-divider">
+    <div class="section-title">
+      <div class="section-num">13</div>
+      <h2>Checklist Final — Antes de ir a Produccion</h2>
+    </div>
+
+    <ul class="checklist">
+      <li>El archivo <code>.env</code> esta creado con todos los valores correctos</li>
+      <li><code>DEBUG=False</code> en el .env</li>
+      <li><code>SECRET_KEY</code> es unica y segura (no la del repositorio)</li>
+      <li><code>DB_PASS</code> tiene una contrasena fuerte</li>
+      <li><code>SERVER_IP</code> apunta a la IP real del servidor</li>
+      <li><code>VITE_API_URL</code> apunta a la URL correcta del servidor</li>
+      <li>El <code>start.sh</code> fue modificado para usar <strong>Gunicorn</strong> en lugar de runserver</li>
+      <li><code>docker compose --profile prod up -d</code> levanta sin errores</li>
+      <li><code>docker compose logs frontend-build</code> muestra "Frontend build copiado correctamente"</li>
+      <li><code>docker compose ps</code> muestra db, backend y nginx-prod como <strong>Up</strong> (frontend-build como Exited 0)</li>
+      <li>El health check responde: <code>curl http://SERVER_IP:8080/health/</code></li>
+      <li>El frontend carga correctamente en el navegador</li>
+      <li>El panel admin es accesible en <code>/admin/</code></li>
+      <li>La contrasena del usuario <code>admin</code> fue cambiada</li>
+      <li>El firewall esta configurado (solo puertos necesarios abiertos)</li>
+      <li>Se configuro un cron para backups automaticos de la BD</li>
+      <li>Los logs no muestran errores criticos</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p>ASOMAP — Guia de Despliegue a Produccion v1.2 — Generado el 06 de Mayo 2026</p>
+    <p>Para imprimir como PDF: Ctrl+P en el navegador → Guardar como PDF → Papel A4, margenes minimos</p>
+  </div>
+
+</div>
+
+</body>
+</html>
