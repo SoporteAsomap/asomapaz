@@ -38,7 +38,7 @@ export const getImageUrl = (relativePath: string) => {
     }
     
     // Use Vite environment variables for media URL
-    const mediaBaseUrl = import.meta.env.VITE_MEDIA_BASE_URL || import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+    const mediaBaseUrl = import.meta.env.VITE_MEDIA_BASE_URL || window.location.origin;
     
     // If the path already starts with /media, use it as is
     if (relativePath.startsWith('/media')) {
@@ -65,7 +65,7 @@ export const getMediaUrl = (relativePath: string) => {
     }
     
     // Use Vite environment variables for media URL
-    const mediaBaseUrl = import.meta.env.VITE_MEDIA_BASE_URL || import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+    const mediaBaseUrl = import.meta.env.VITE_MEDIA_BASE_URL || window.location.origin;
     
     // If the path already starts with /media, use it as is
     if (relativePath.startsWith('/media')) {
