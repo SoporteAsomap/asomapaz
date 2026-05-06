@@ -124,7 +124,10 @@ else:
         
         echo "🏦 Creando servicios bancarios de ejemplo..."
         python manage.py create_sample_services --force 2>/dev/null || echo "⚠️  Error en create_sample_services"
-        
+
+        echo "🎨 Creando datos de layout (redes sociales y contactos)..."
+        python manage.py create_layout_data 2>/dev/null || echo "⚠️  Error en create_layout_data"
+
         echo "✅ Datos iniciales creados exitosamente"
     else
         echo "✅ Datos iniciales ya existen, saltando..."
