@@ -162,6 +162,9 @@ export const AppRouter: React.FC = () => {
                         {/* Ubicaciones */}
                         <Route path="/locations/map" element={<MapLocations />} />
 
+                        {/* Empresa - redirect a inicio hasta que tenga página propia */}
+                        <Route path="/empresa" element={<Navigate to="/" replace />} />
+
                         {/* Redirección para rutas no encontradas */}
                         <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>

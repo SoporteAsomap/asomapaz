@@ -140,6 +140,32 @@ h1:contains("Administración de Django"),
     color: var(--asomap-orange) !important;
 }
 
+/* Botones — texto siempre blanco sin importar la regla global de <a> */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-info,
+.btn-success,
+.btn-danger,
+.btn-warning,
+.btn-dark,
+.btn-light,
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+    color: var(--asomap-white) !important;
+}
+
+.btn:hover,
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-info:hover,
+.btn-success:hover,
+.btn-danger:hover,
+.btn-warning:hover {
+    color: var(--asomap-white) !important;
+}
+
 /* Botones personalizados */
 .btn-info {
     background-color: var(--asomap-blue) !important;
@@ -205,38 +231,28 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--asomap-blue-dark) !important;
 }
 
-/* Asegurar que los títulos de las columnas siempre sean visibles */
+/* Asegurar que los títulos de las columnas siempre sean visibles — solo thead */
 .table thead th,
 .table thead th a,
 .table thead th span,
-.table thead th *,
-th,
-th a,
-th span,
-th * {
+.table thead th * {
     color: var(--asomap-white) !important;
     text-decoration: none !important;
     font-weight: bold !important;
 }
 
-/* Reglas más específicas para Django Admin */
+/* Reglas más específicas para Django Admin — solo thead */
 .admin .table thead th,
-.admin .table thead th span,
-.admin th,
-.admin th span,
-.admin th {
+.admin .table thead th span {
     color: var(--asomap-white) !important;
     text-decoration: none !important;
     font-weight: bold !important;
 }
 
-/* Hover en títulos de columnas */
+/* Hover en títulos de columnas — solo thead */
 .table thead th:hover,
 .table thead th a:hover,
-.table thead th:hover a,
-th:hover,
-th a:hover,
-th:hover a {
+.table thead th:hover a {
     color: var(--asomap-orange) !important;
     background-color: var(--asomap-blue-dark) !important;
 }
@@ -262,35 +278,35 @@ a:hover {
     text-decoration: underline !important;
 }
 
-/* Enlaces en tablas */
-.table a,
-.admin .table a,
-tbody a,
-.admin tbody a {
+/* Enlaces en tablas — excluir botones */
+.table a:not(.btn):not([class*="btn-"]),
+.admin .table a:not(.btn):not([class*="btn-"]),
+tbody a:not(.btn):not([class*="btn-"]),
+.admin tbody a:not(.btn):not([class*="btn-"]) {
     color: var(--asomap-blue) !important;
     text-decoration: none !important;
 }
 
-.table a:hover,
-.admin .table a:hover,
-tbody a:hover,
-.admin tbody a:hover {
+.table a:not(.btn):not([class*="btn-"]):hover,
+.admin .table a:not(.btn):not([class*="btn-"]):hover,
+tbody a:not(.btn):not([class*="btn-"]):hover,
+.admin tbody a:not(.btn):not([class*="btn-"]):hover {
     color: var(--asomap-blue-dark) !important;
     text-decoration: underline !important;
 }
 
-/* Enlaces en filas de tabla */
-tr a,
-.admin tr a,
-td a,
-.admin td a {
+/* Enlaces en filas de tabla — excluir botones */
+tr a:not(.btn):not([class*="btn-"]),
+.admin tr a:not(.btn):not([class*="btn-"]),
+td a:not(.btn):not([class*="btn-"]),
+.admin td a:not(.btn):not([class*="btn-"]) {
     color: var(--asomap-blue) !important;
 }
 
-tr a:hover,
-.admin tr a:hover,
-td a:hover,
-.admin td a:hover {
+tr a:not(.btn):not([class*="btn-"]):hover,
+.admin tr a:not(.btn):not([class*="btn-"]):hover,
+td a:not(.btn):not([class*="btn-"]):hover,
+.admin td a:not(.btn):not([class*="btn-"]):hover {
     color: var(--asomap-blue-dark) !important;
     text-decoration: underline !important;
 }
@@ -354,11 +370,31 @@ td a:hover,
     font-weight: bold;
 }
 
-/* Hover effects */
-.nav-link:hover,
-.btn:hover,
-a:hover {
+/* Hover effects — nav y botones */
+.nav-link:hover {
     color: var(--asomap-orange) !important;
+}
+
+/* Cabeceras de tabla — especificidad alta para ganar sobre .table a:not() */
+#result_list thead th,
+#result_list thead th a,
+#result_list thead th span,
+#result_list thead th * {
+    color: var(--asomap-white) !important;
+    text-decoration: none !important;
+}
+
+/* Hover en filas de datos — gris neutro para que el texto azul sea legible */
+#result_list tbody tr:hover,
+.table-hover tbody tr:hover {
+    background-color: #f0f2f8 !important;
+}
+
+#result_list tbody tr:hover td,
+#result_list tbody tr:hover th,
+#result_list tbody tr:hover td a,
+#result_list tbody tr:hover th a {
+    color: var(--asomap-blue-dark) !important;
 }
 
 /* Responsive */

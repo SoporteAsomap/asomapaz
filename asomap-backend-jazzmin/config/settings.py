@@ -19,6 +19,7 @@ ALLOWED_HOSTS = [
 # APPLICATIONS
 # ======================
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -126,14 +127,27 @@ USE_TZ = True
 # ======================
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # ======================
 # MEDIA FILES
 # ======================
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/home/media'
+AZURE_ACCOUNT_NAME = os.getenv('AZURE_STORAGE_ACCOUNT_NAME')
+AZURE_ACCOUNT_KEY  = os.getenv('AZURE_STORAGE_ACCOUNT_KEY')
+AZURE_CONTAINER    = os.getenv('AZURE_STORAGE_CONTAINER', 'media')
+
+if AZURE_ACCOUNT_NAME and AZURE_ACCOUNT_KEY:
+    # Producción: Azure Blob Storage
+    DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+    AZURE_CUSTOM_DOMAIN   = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+    MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/'
+    MEDIA_ROOT = ''
+else:
+    # Desarrollo: disco local
+    MEDIA_URL  = '/media/'
+    MEDIA_ROOT = os.getenv('MEDIA_ROOT', BASE_DIR / 'media')
 
 # ======================
 # DRF
@@ -153,3 +167,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 # DEFAULT PRIMARY KEY
 # ======================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ======================
+# JAZZMIN
+# ======================
+from config.jazzmin import JAZZMIN_SETTINGS, JAZZMIN_UI_TWEAKS

@@ -36,4 +36,4 @@ ENV ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
 EXPOSE 8000
 
 # Comando para ejecutar Django con migraciones automáticas
-CMD ["./start.sh"]
+CMD ["bash", "-c", "sed -i 's/\\r$//' start.sh && bash start.sh"]

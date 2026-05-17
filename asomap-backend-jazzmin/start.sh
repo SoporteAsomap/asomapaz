@@ -93,9 +93,10 @@ else:
         echo "🏠 Creando datos de la página de inicio..."
         python manage.py create_home_data --force 2>/dev/null || echo "⚠️  Error en create_home_data"
         
-        echo "📍 Creando servicios y horarios de ubicaciones..."
+        echo "📍 Creando servicios, horarios y ubicaciones..."
         python manage.py create_services --force 2>/dev/null || echo "⚠️  Error en create_services"
         python manage.py create_schedules --force 2>/dev/null || echo "⚠️  Error en create_schedules"
+        python manage.py create_locations 2>/dev/null || echo "⚠️  Error en create_locations"
         
         echo "📰 Creando noticias y promociones de ejemplo..."
         python manage.py create_sample_news --force 2>/dev/null || echo "⚠️  Error en create_sample_news"
@@ -128,6 +129,9 @@ else:
         echo "🎨 Creando datos de layout (redes sociales y contactos)..."
         python manage.py create_layout_data 2>/dev/null || echo "⚠️  Error en create_layout_data"
 
+        echo "💱 Creando datos del header (tasa de cambio y navegacion)..."
+        python manage.py create_header_data 2>/dev/null || echo "⚠️  Error en create_header_data"
+
         echo "✅ Datos iniciales creados exitosamente"
     else
         echo "✅ Datos iniciales ya existen, saltando..."
@@ -156,6 +160,7 @@ echo "🌐 Servidor disponible en http://0.0.0.0:8000"
 exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:8000 \
     --workers 3 \
+    --reload \
     --timeout 120 \
     --access-logfile - \
     --error-logfile -

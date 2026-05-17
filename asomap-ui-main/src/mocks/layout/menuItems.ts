@@ -76,11 +76,11 @@ export const productItems: MainNavItem[] = [
         text: "Cuentas",
         icon: FiDollarSign,
         subItems: [
-            { text: "Cuenta Clásica Física", href: "/productos/cuenta-clasica-fisica", image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" },
-            { text: "Cuenta Pekes", href: "/productos/cuenta-pekes", image: ImageCuentaPeke },
-            { text: "Cuenta Orden Pago", href: "/productos/cuenta-orden-pago", image: ImageCuentaOrderPayment },
-            { text: "Cuenta Clásica Especial", href: "/productos/cuenta-clasica-especial", image: ImageCuentaSpecial },
-            { text: "Cuenta San Ideal", href: "/productos/cuenta-san-ideal", image: ImageCuentaSanIdeal },
+            { text: "Cuenta Física Clásica", href: "/productos/cuenta/cuenta-fisica-clasica", image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" },
+            { text: "Cuenta Pekes", href: "/productos/cuenta/cuenta-pekes", image: ImageCuentaPeke },
+            { text: "Cuenta Clásica", href: "/productos/cuenta/cuenta-clasica", image: ImageCuentaOrderPayment },
+            { text: "Cuenta Corriente", href: "/productos/cuenta/cuenta-corriente", image: ImageCuentaSpecial },
+            { text: "Cuenta de Ahorros Premium", href: "/productos/cuenta/cuenta-de-ahorros-premium", image: ImageCuentaSanIdeal },
         ],
         image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80"
     },
@@ -88,7 +88,7 @@ export const productItems: MainNavItem[] = [
         text: "Tarjetas",
         icon: FiCreditCard,
         subItems: [
-            { text: "Tarjeta de Débito", href: "/productos/tarjeta-debito", image: "https://images.unsplash.com/photo-1601597111158-f1446042c8fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" },
+            { text: "Tarjeta de Débito", href: "/productos/tarjeta/tarjeta-de-debito", image: "https://images.unsplash.com/photo-1601597111158-f1446042c8fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" },
         ],
         image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80"
     },

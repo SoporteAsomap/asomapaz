@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { exchangeRateData } from '@/mocks';
+import { headerService } from '@/api';
 
 interface ExchangeRate {
     currency: string;
@@ -14,16 +14,19 @@ interface ExchangeRateData {
 
 export const useExchangeRate = () => {
     const [data, setData] = useState<ExchangeRateData>({ rates: [] });
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        // En un entorno real, aquí se haría la llamada a la API
-        // Por ahora, usamos los datos estáticos
-        setData({ rates: exchangeRateData.rates });
+        headerService.getExchangeRate()
+            .then((response) => {
+                setData({ rates: response.rates ?? [] });
+            })
+            .catch((err) => {
+                setError(err?.message ?? 'Error al cargar tasa de cambio');
+            })
+            .finally(() => setIsLoading(false));
     }, []);
 
-    return {
-        exchangeRateData: data,
-        isLoading: false,
-        error: null
-    };
+    return { exchangeRateData: data, isLoading, error };
 };

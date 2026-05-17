@@ -83,13 +83,32 @@ const CertificateDetail: React.FC = () => {
   const renderListItems = (items: any) => {
     if (!Array.isArray(items)) return null;
 
-    return items.map((item: any, index: number) => (
-      <li key={index}>
-        {typeof item === 'string'
-          ? item
-          : item?.text || item?.title || item?.name || 'Elemento'}
-      </li>
-    ));
+    return items.map((item: any, index: number) => {
+      if (typeof item === 'string') return <li key={index}>{item}</li>;
+
+      // { label, value } — tarifas
+      if (item?.label !== undefined) {
+        return (
+          <li key={index}>
+            <span className="font-medium">{item.label}:</span>{' '}
+            {item.value}
+          </li>
+        );
+      }
+
+      // { range, rate, term } — escala de depósitos
+      if (item?.range !== undefined) {
+        return (
+          <li key={index}>
+            {item.range}
+            {item.rate ? ` — ${item.rate}` : ''}
+            {item.term ? ` (${item.term})` : ''}
+          </li>
+        );
+      }
+
+      return <li key={index}>{item?.text || item?.title || item?.name || ''}</li>;
+    });
   };
 
   const renderFaqItems = (items: any) => {
