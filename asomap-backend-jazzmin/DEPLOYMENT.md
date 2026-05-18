@@ -1,178 +1,253 @@
-# 🚀 Despliegue en Railway
+# Despliegue en Azure
 
-## 📋 Requisitos Previos
+## Arquitectura
 
-1. **Cuenta en Railway**: [railway.app](https://railway.app)
-2. **Repositorio en GitHub**: Código subido a GitHub
-3. **Servicio PostgreSQL**: Crear en Railway
-4. (Opcional) Variables para admin: `CREATE_SUPERUSER=true` y credenciales
-
-## 🔧 Configuración en Railway
-
-### 1. Crear Proyecto
-
-1. Ve a [Railway Dashboard](https://railway.app/dashboard)
-2. Haz clic en "New Project"
-3. Selecciona "Deploy from GitHub repo"
-4. Conecta tu repositorio de GitHub
-5. Selecciona el repositorio `asomap-backend`
-
-### 2. Crear Base de Datos
-
-1. En tu proyecto Railway, haz clic en "New"
-2. Selecciona "Database" → "PostgreSQL"
-3. Railway creará automáticamente la variable `DATABASE_URL`
-
-### 3. Configurar Variables de Entorno
-
-En tu proyecto Railway, ve a "Variables" y agrega (puedes usar `railway.env.example` como guía):
-
-```bash
-# OBLIGATORIAS
-SECRET_KEY=tu-clave-secreta
-DEBUG=False
-
-# Seguridad detrás de proxy (evita bucles de redirección)
-SECURE_PROXY_SSL_HEADER=HTTP_X_FORWARDED_PROTO,https
-
-# CSRF (requerido si usas cookies/sesión en HTTPS)
-CSRF_TRUSTED_ORIGINS=https://web-production-xxxx.up.railway.app,https://asomap-frontend.vercel.app
-
-# OPCIONALES
-CORS_ALLOWED_ORIGINS=https://asomap-frontend.vercel.app,https://asomap.vercel.app
-FRONTEND_URL=https://asomap-frontend.vercel.app
-
-# (Opcional) Crear superusuario en deploy
-CREATE_SUPERUSER=false
-DJANGO_SUPERUSER_USERNAME=admin
-DJANGO_SUPERUSER_EMAIL=admin@asomap.com
-DJANGO_SUPERUSER_PASSWORD=defíneme
-```
-
-### 4. Configurar Dominio
-
-1. Ve a "Settings" → "Domains"
-2. Railway asignará un dominio automáticamente
-3. Opcional: Configura un dominio personalizado
-
-## 🔄 Proceso de Despliegue
-
-### Automático (Recomendado)
-
-1. **Railway detecta** cambios en GitHub automáticamente
-2. **Ejecuta** el script `railway-init.sh`
-3. **Aplica** migraciones y recolecta archivos estáticos
-4. (Opcional) Crea superusuario si `CREATE_SUPERUSER=true`
-5. **Inicia** Gunicorn con la aplicación
-
-### Manual (Si hay problemas)
-
-Si el despliegue automático falla, ejecuta en Railway Console:
-
-```bash
-# Verificar variables
-echo $SECRET_KEY
-echo $DATABASE_URL
-
-# Ejecutar migraciones
-python manage.py migrate --noinput
-
-# Recolectar estáticos
-python manage.py collectstatic --noinput
-
-# Crear superusuario
-python manage.py createsuperuser
-
-# Verificar aplicación
-python manage.py check --deploy
-```
-
-## ✅ Verificación
-
-### 1. Healthcheck
-```bash
-# Endpoint principal
-curl https://web-production-c493c.up.railway.app/
-# Debe devolver: {"status": "healthy", "message": "ASOMAP Backend is running", ...}
-
-# Endpoint específico de healthcheck
-curl https://web-production-c493c.up.railway.app/health/
-# Debe devolver: {"status": "healthy", "message": "ASOMAP Backend is running", ...}
-```
-
-### 2. Admin Panel
-```bash
-# Visita: https://web-production-c493c.up.railway.app/admin/
-# Usa el superusuario que creaste manualmente o por variables
-```
-
-### 3. API Endpoints
-```bash
-# Swagger UI: https://web-production-c493c.up.railway.app/api/schema/swagger-ui/
-# API Base: https://web-production-c493c.up.railway.app/api/
-```
-
-## 🐛 Solución de Problemas
-
-### Error: "Service Unavailable"
-- ✅ Verificar `SECRET_KEY` está configurada
-- ✅ Verificar `DATABASE_URL` está configurada
-- ✅ Verificar `DEBUG=False`
-
-### Error: "Database connection failed"
-- ✅ Verificar servicio PostgreSQL está activo
-- ✅ Verificar `DATABASE_URL` es correcta
-- ✅ Ejecutar migraciones manualmente
-
-### Error: "Static files not found"
-- ✅ Ejecutar `python manage.py collectstatic --noinput`
-- ✅ Verificar `STATIC_ROOT` está configurado
-
-### Error: "ALLOWED_HOSTS"
-- ✅ Verificar `DEBUG=False` en variables
-- ✅ En producción puedes definir `ALLOWED_HOSTS` por variables (o dejar `*` temporalmente)
-- ✅ Incluir `healthcheck.railway.app` y tu dominio de Railway
-
-### Error: "Healthcheck failed"
-- ✅ Verificar endpoint `/health/` responde con 200
-- ✅ Verificar variable `PORT` está configurada
-- ✅ Verificar `healthcheck.railway.app` en ALLOWED_HOSTS
-- ✅ Verificar timeout de healthcheck (300s por defecto)
-- ✅ Verificar `SECURE_PROXY_SSL_HEADER` correctamente definido
-
-## 📊 Monitoreo
-
-### Logs en Railway
-1. Ve a tu proyecto en Railway
-2. Haz clic en el servicio
-3. Ve a la pestaña "Logs"
-4. Monitorea errores y warnings
-
-### Métricas
-- **Uptime**: Railway Dashboard
-- **Performance**: Logs de Gunicorn
-- **Database**: PostgreSQL Dashboard
-
-## 🔒 Seguridad
-
-### Variables Sensibles
-- ✅ `SECRET_KEY`: Cambiar en producción
-- ✅ `DATABASE_URL`: Railway la maneja automáticamente
-- ✅ `DEBUG=False`: Siempre en producción
-
-### HTTPS
-- ✅ Railway proporciona HTTPS automáticamente
-- ✅ Certificados SSL renovados automáticamente
-
-## 📞 Soporte
-
-Si tienes problemas:
-
-1. **Revisar logs** en Railway Dashboard
-2. **Verificar variables** de entorno
-3. **Ejecutar comandos** manualmente en Railway Console
-4. **Contactar soporte** de Railway si es necesario
+| Componente | Servicio Azure |
+|---|---|
+| Backend (Django) | Azure Container Apps |
+| Base de datos | Azure Database for PostgreSQL Flexible Server |
+| Archivos media | Azure Blob Storage |
+| Frontend (React) | Azure Static Web Apps |
+| Imágenes Docker | Azure Container Registry (ACR) |
+| CI/CD | GitHub Actions |
 
 ---
 
-**¡Tu aplicación ASOMAP Backend debería estar funcionando en Railway!** 🎉
+## Requisitos Previos
+
+- Cuenta de Azure activa
+- Azure CLI instalado (`az login` para autenticarse)
+- Docker instalado
+- Repositorio en GitHub
+
+---
+
+## 1. Infraestructura en Azure
+
+### Resource Group y Container Registry
+
+```bash
+az group create --name asomap-rg --location brazilsouth
+
+az acr create \
+  --resource-group asomap-rg \
+  --name asomapregistry \
+  --sku Basic \
+  --admin-enabled true
+```
+
+### PostgreSQL
+
+```bash
+az postgres flexible-server create \
+  --resource-group asomap-rg \
+  --name asomap-postgres \
+  --location brazilsouth \
+  --admin-user asomap_admin \
+  --admin-password "TuPassword" \
+  --sku-name Standard_B1ms \
+  --tier Burstable \
+  --version 16 \
+  --public-access 0.0.0.0
+
+az postgres flexible-server db create \
+  --resource-group asomap-rg \
+  --server-name asomap-postgres \
+  --database-name asomap_db
+```
+
+> **Nota:** Si la password tiene caracteres especiales como `!`, encodearlos como `%21` en la DATABASE_URL.
+
+### Storage Account (para archivos media)
+
+```bash
+az storage account create \
+  --name asomapstorage \
+  --resource-group asomap-rg \
+  --location brazilsouth \
+  --sku Standard_LRS \
+  --allow-blob-public-access true
+
+az storage container create \
+  --name media \
+  --account-name asomapstorage \
+  --public-access blob
+```
+
+### Container Apps Environment
+
+```bash
+az containerapp env create \
+  --name asomap-env \
+  --resource-group asomap-rg \
+  --location brazilsouth
+```
+
+---
+
+## 2. Build y Push de la Imagen Docker
+
+```bash
+# Login al registry
+az acr login --name asomapregistry
+
+# Build y push (usar timestamp para forzar nueva revisión)
+TAG=$(date +%Y%m%d%H%M%S)
+docker build -t asomapregistry.azurecr.io/asomap-backend:$TAG .
+docker push asomapregistry.azurecr.io/asomap-backend:$TAG
+```
+
+---
+
+## 3. Despliegue del Container App
+
+```bash
+ACR_PASSWORD=$(az acr credential show --name asomapregistry --query passwords[0].value -o tsv)
+TAG=$(date +%Y%m%d%H%M%S)
+
+az containerapp create \
+  --name asomap-backend \
+  --resource-group asomap-rg \
+  --environment asomap-env \
+  --image asomapregistry.azurecr.io/asomap-backend:$TAG \
+  --registry-server asomapregistry.azurecr.io \
+  --registry-username asomapregistry \
+  --registry-password "$ACR_PASSWORD" \
+  --target-port 8000 \
+  --ingress external \
+  --min-replicas 1 \
+  --max-replicas 3 \
+  --env-vars \
+    "DEBUG=False" \
+    "SECRET_KEY=tu-clave-secreta-50-chars" \
+    "DATABASE_URL=postgresql://asomap_admin:Password@asomap-postgres.postgres.database.azure.com:5432/asomap_db" \
+    "CSRF_TRUSTED_ORIGINS=https://*.azurecontainerapps.io" \
+    "CORS_ALLOW_ALL_ORIGINS=False" \
+    "CORS_ALLOWED_ORIGINS=https://tu-static-web-app.azurestaticapps.net" \
+    "AZURE_STORAGE_ACCOUNT_NAME=asomapstorage" \
+    "AZURE_STORAGE_ACCOUNT_KEY=tu-storage-key" \
+    "AZURE_STORAGE_CONTAINER=media"
+```
+
+> **Importante:** Siempre usar tag con timestamp (no `:latest`) para que Azure Container Apps cree una nueva revisión.
+
+### Actualizar imagen existente
+
+```bash
+TAG=$(date +%Y%m%d%H%M%S)
+docker build -t asomapregistry.azurecr.io/asomap-backend:$TAG .
+docker push asomapregistry.azurecr.io/asomap-backend:$TAG
+
+az containerapp update \
+  --name asomap-backend \
+  --resource-group asomap-rg \
+  --image asomapregistry.azurecr.io/asomap-backend:$TAG
+```
+
+---
+
+## 4. Despliegue del Frontend
+
+```bash
+az staticwebapp create \
+  --name asomap-frontend \
+  --resource-group asomap-rg \
+  --location eastus2
+```
+
+El token de despliegue se obtiene desde:
+**Azure Portal → Static Web App → Manage deployment token**
+
+Agregar como secret en GitHub: `AZURE_STATIC_WEB_APPS_API_TOKEN`
+
+---
+
+## 5. GitHub Actions (CI/CD)
+
+### Secrets requeridos en GitHub
+
+| Secret | Cómo obtenerlo |
+|---|---|
+| `AZURE_CREDENTIALS` | `az ad sp create-for-rbac --name asomap-deploy --role contributor --scopes /subscriptions/<SUB_ID>/resourceGroups/asomap-rg --json-auth` |
+| `AZURE_REGISTRY_NAME` | `asomapregistry` |
+| `AZURE_REGISTRY_USERNAME` | `az acr credential show --name asomapregistry --query username -o tsv` |
+| `AZURE_REGISTRY_PASSWORD` | `az acr credential show --name asomapregistry --query passwords[0].value -o tsv` |
+| `AZURE_RESOURCE_GROUP` | `asomap-rg` |
+| `AZURE_STATIC_WEB_APPS_API_TOKEN` | Azure Portal → Static Web App → Manage deployment token |
+| `VITE_API_BASE_URL` | URL del Container App + `/api` (ej: `https://asomap-backend.whitesky-xxx.brazilsouth.azurecontainerapps.io/api`) |
+
+El workflow de backend (`.github/workflows/backend.yml`) se dispara automáticamente en cada push a `main` que afecte archivos del backend.
+
+---
+
+## 6. Variables de Entorno del Container App
+
+| Variable | Valor |
+|---|---|
+| `DEBUG` | `False` |
+| `SECRET_KEY` | Clave aleatoria 50+ chars |
+| `DATABASE_URL` | `postgresql://user:password@host:5432/db` |
+| `CSRF_TRUSTED_ORIGINS` | `https://*.azurecontainerapps.io` |
+| `CORS_ALLOW_ALL_ORIGINS` | `False` |
+| `CORS_ALLOWED_ORIGINS` | URL del Static Web App |
+| `AZURE_STORAGE_ACCOUNT_NAME` | Nombre del storage account |
+| `AZURE_STORAGE_ACCOUNT_KEY` | Clave del storage account |
+| `AZURE_STORAGE_CONTAINER` | `media` |
+
+---
+
+## 7. Verificación
+
+```bash
+# Healthcheck
+curl https://asomap-backend.<id>.brazilsouth.azurecontainerapps.io/health/
+# Debe devolver: {"status": "ok"}
+
+# Admin panel
+# https://asomap-backend.<id>.brazilsouth.azurecontainerapps.io/
+
+# Swagger UI
+# https://asomap-backend.<id>.brazilsouth.azurecontainerapps.io/api/schema/swagger-ui/
+```
+
+---
+
+## 8. Solución de Problemas
+
+### Error 403 CSRF en el admin
+- Verificar que `CSRF_TRUSTED_ORIGINS` incluye la URL del Container App con `https://`
+
+### Container App no actualiza imagen
+- Azure cachea la imagen `:latest`. Siempre usar tags con timestamp (`YYYYMMDDHHMMSS`)
+
+### Error de autenticación en PostgreSQL
+- Si la password tiene `!` u otros caracteres especiales, encodear en la URL (`!` → `%21`)
+
+### Registro de providers si falta algún servicio
+```bash
+az provider register --namespace Microsoft.App
+az provider register --namespace Microsoft.DBforPostgreSQL
+az provider register --namespace Microsoft.Storage
+az provider register --namespace Microsoft.Web
+```
+
+### PostgreSQL no disponible en eastus/eastus2
+- Usar `brazilsouth` como región alternativa
+
+---
+
+## 9. Comandos de Administración en Producción
+
+```bash
+# Ejecutar comando en el container
+az containerapp exec \
+  --name asomap-backend \
+  --resource-group asomap-rg \
+  --command "python manage.py createsuperuser"
+
+# Ver logs
+az containerapp logs show \
+  --name asomap-backend \
+  --resource-group asomap-rg \
+  --follow
+```
