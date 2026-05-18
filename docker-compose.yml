@@ -41,6 +41,7 @@ services:
       - MEDIA_ROOT=/app/media
       - STATIC_ROOT=/app/staticfiles
     volumes:
+      - ./asomap-backend-jazzmin:/app
       - media_data:/app/media
       - static_data:/app/staticfiles
     depends_on:

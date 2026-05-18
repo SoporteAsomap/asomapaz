@@ -21,4 +21,4 @@ class LocationSerializer(serializers.ModelSerializer):
         return obj.hours() if callable(obj.hours) else obj.hours
 
     def get_services(self, obj):
-        return obj.services_list()
+        return obj.services_list
