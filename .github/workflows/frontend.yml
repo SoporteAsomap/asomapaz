@@ -2,7 +2,8 @@ name: Deploy Frontend to Azure Static Web Apps
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - 'asomap-ui-main/**'
       - '.github/workflows/frontend.yml'
@@ -18,19 +19,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 20
+          cache: npm
           cache-dependency-path: asomap-ui-main/package-lock.json
 
       - name: Install dependencies
         working-directory: asomap-ui-main
         run: npm ci
 
-      - name: Build
+      - name: Build frontend
         working-directory: asomap-ui-main
-        env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
-          VITE_ENV: production
         run: npm run build
 
       - name: Deploy to Azure Static Web Apps
@@ -39,6 +37,6 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
-          app_location: asomap-ui-main
-          output_location: build
+          app_location: "asomap-ui-main/build"
+          api_location: ""
           skip_app_build: true
