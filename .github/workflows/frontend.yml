@@ -40,5 +40,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
           app_location: asomap-ui-main
-          output_location: dist
+          output_location: build
           skip_app_build: true
