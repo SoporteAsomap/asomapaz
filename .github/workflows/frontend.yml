@@ -30,8 +30,9 @@ jobs:
       - name: Build frontend
         working-directory: asomap-ui-main
         env:
-          VITE_API_URL: https://app-asomap-backend-12345.azurewebsites.net
-          VITE_MEDIA_BASE_URL: https://stasomapprod12345.blob.core.windows.net/media
+          VITE_ENV: production
+          VITE_API_BASE_URL: https://app-asomap-backend-12345.azurewebsites.net/api
+          VITE_MEDIA_BASE_URL: https://stasomapprod12345.blob.core.windows.net
         run: npm run build
 
       - name: Deploy to Azure Static Web Apps
