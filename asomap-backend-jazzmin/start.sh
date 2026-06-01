@@ -151,7 +151,7 @@ collect_static
 create_superuser
 
 # Crear datos iniciales si no existen
-create_initial_data
+# create_initial_data
 
 echo "🎉 Backend Django iniciado correctamente!"
 echo "🌐 Servidor disponible en http://0.0.0.0:8000"
