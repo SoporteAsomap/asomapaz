@@ -26,8 +26,22 @@ class HomeViewSet(viewsets.GenericViewSet):
     def slider(self, request):
         try:
             items = SliderItem.objects.filter(is_active=True).order_by("order")
-            serializer = SliderItemSerializer(items, many=True, context={"request": request})
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            data = []
+
+            for item in items:
+                data.append({
+                    "id": item.id,
+                    "image": item.image_desktop_url,
+                    "imageTablet": item.image_tablet_url,
+                    "imageMobile": item.image_mobile_url,
+                    "alt": item.alt,
+                    "is_active": item.is_active,
+                    "order": item.order,
+                    "created_at": item.created_at,
+                    "updated_at": item.updated_at,
+                })
+
+            return Response(data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
