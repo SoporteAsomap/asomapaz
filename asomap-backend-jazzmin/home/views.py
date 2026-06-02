@@ -23,9 +23,20 @@ class HomeViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=["get"], url_path="slider")
     def slider(self, request):
-        items = SliderItem.objects.filter(is_active=True).order_by("order")
-        serializer = SliderItemSerializer(items, many=True, context={"request": request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            items = SliderItem.objects.filter(is_active=True).order_by("order")
+            serializer = SliderItemSerializer(items, many=True)
+            return Response({
+                "debug_count": items.count(),
+                "debug_db": {
+                    "host": __import__("django.conf").conf.settings.DATABASES["default"].get("HOST"),
+                    "name": __import__("django.conf").conf.settings.DATABASES["default"].get("NAME"),
+                    "user": __import__("django.conf").conf.settings.DATABASES["default"].get("USER"),
+                },
+                "data": serializer.data,
+            })
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=False, methods=["get"], url_path="product-section")
     def product_section(self, request):
