@@ -2,6 +2,9 @@
 
 # Script de inicio para Django con migraciones automáticas
 
+echo "🔎 Debug SliderItem en Azure..."
+python manage.py shell -c "from home.models import SliderItem; from django.conf import settings; print('AZURE_DB_HOST:', settings.DATABASES['default'].get('HOST')); print('AZURE_DB_NAME:', settings.DATABASES['default'].get('NAME')); print('AZURE_SLIDER_TABLE:', SliderItem._meta.db_table); print('AZURE_SLIDER_COUNT:', SliderItem.objects.filter(is_active=True).count())" || echo "❌ Error debug SliderItem"
+
 echo "🚀 Iniciando backend Django..."
 
 # Función para esperar a que PostgreSQL esté listo
