@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -25,16 +26,24 @@ class HomeViewSet(viewsets.GenericViewSet):
     def slider(self, request):
         try:
             items = SliderItem.objects.filter(is_active=True).order_by("order")
-            serializer = SliderItemSerializer(items, many=True)
-            return Response({
-                "debug_count": items.count(),
-                "debug_db": {
-                    "host": __import__("django.conf").conf.settings.DATABASES["default"].get("HOST"),
-                    "name": __import__("django.conf").conf.settings.DATABASES["default"].get("NAME"),
-                    "user": __import__("django.conf").conf.settings.DATABASES["default"].get("USER"),
+            serializer = SliderItemSerializer(
+                items,
+                many=True,
+                context={"request": request},
+            )
+
+            return Response(
+                {
+                    "debug_count": items.count(),
+                    "debug_db": {
+                        "host": settings.DATABASES["default"].get("HOST"),
+                        "name": settings.DATABASES["default"].get("NAME"),
+                        "user": settings.DATABASES["default"].get("USER"),
+                    },
+                    "data": serializer.data,
                 },
-                "data": serializer.data,
-            })
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
