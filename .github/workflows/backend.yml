@@ -47,3 +47,4 @@ jobs:
           images: ${{ secrets.ACR_LOGIN_SERVER }}/asomap-backend:${{ github.sha }}
 
 # trigger backend deploy
+# force backend deploy 06/03/2026 15:33:40
