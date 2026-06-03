@@ -18,7 +18,7 @@ wait_for_postgres() {
 }
 
 # Función para ejecutar migraciones
-#run_migrations() {
+run_migrations() {
     echo "🔄 Ejecutando migraciones de Django..."
     python manage.py migrate --noinput
     if [ $? -eq 0 ]; then
@@ -29,6 +29,14 @@ wait_for_postgres() {
     fi
 }
 
+# Esperar a que PostgreSQL esté listo
+wait_for_postgres
+
+# Ejecutar migraciones
+#run_migrations
+
+# Recolectar archivos estáticos
+collect_static
 # Función para recolectar archivos estáticos
 collect_static() {
     echo "📁 Recolectando archivos estáticos..."
