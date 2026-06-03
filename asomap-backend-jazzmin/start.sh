@@ -167,3 +167,4 @@ exec gunicorn config.wsgi:application \
     --timeout 120 \
     --access-logfile - \
     --error-logfile -
+# debug trigger 06/03/2026 10:42:58
