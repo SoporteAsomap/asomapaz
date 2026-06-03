@@ -18,7 +18,7 @@ wait_for_postgres() {
 }
 
 # Función para ejecutar migraciones
-run_migrations() {
+#run_migrations() {
     echo "🔄 Ejecutando migraciones de Django..."
     python manage.py migrate --noinput
     if [ $? -eq 0 ]; then
