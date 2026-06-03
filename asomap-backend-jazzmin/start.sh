@@ -168,3 +168,4 @@ exec gunicorn config.wsgi:application \
     --access-logfile - \
     --error-logfile -
 # debug trigger 06/03/2026 10:42:58
+# force deploy disable migrations
