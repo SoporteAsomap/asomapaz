@@ -84,26 +84,41 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # ======================
-# DATABASE (AZURE)
+# DATABASE (AZURE POSTGRES)
 # ======================
-DATABASE_URL = os.getenv('DATABASE_URL')
+
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
     DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
+        "default": dj_database_url.parse(DATABASE_URL)
     }
 else:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME") or os.getenv("APPSETTING_DB_NAME") or "asomap",
+            "USER": os.getenv("DB_USER") or os.getenv("APPSETTING_DB_USER") or "asomapadmin",
+            "PASSWORD": (
+                os.getenv("DB_PASS")
+                or os.getenv("APPSETTING_DB_PASS")
+                or ""
+            ),
+            "HOST": (
+                os.getenv("DB_HOST")
+                or os.getenv("APPSETTING_DB_HOST")
+                or "psql-asomap-prod-12345tf.postgres.database.azure.com"
+            ),
+            "PORT": (
+                os.getenv("DB_PORT")
+                or os.getenv("APPSETTING_DB_PORT")
+                or "5432"
+            ),
         }
     }
 
-# 🔥 OPTIMIZACIÓN (IMPORTANTE)
 DATABASES["default"]["CONN_MAX_AGE"] = 60
 DATABASES["default"]["CONN_HEALTH_CHECKS"] = True
-
 # ======================
 # PASSWORD VALIDATION
 # ======================
