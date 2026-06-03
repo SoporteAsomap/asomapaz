@@ -145,7 +145,7 @@ else:
 wait_for_postgres
 
 # Ejecutar migraciones
-run_migrations
+#run_migrations
 
 # Recolectar archivos estáticos
 collect_static
