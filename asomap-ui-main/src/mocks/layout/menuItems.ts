@@ -17,11 +17,13 @@ import {
     FiUsers,
     FiClock,
     FiTarget,
-    FiCompass
+    FiCompass,
+    FiBookOpen
 } from 'react-icons/fi';
 import { IoCardSharp } from "react-icons/io5";
 
 import { MainNavItem, IButtonLink } from '@interfaces';
+import { FaBookOpen } from 'react-icons/fa6';
 
 export const aboutItems: MainNavItem[] = [
     {
@@ -176,7 +178,13 @@ const userSupportItems: MainNavItem[] = [
         text: "Contratos de adhesión",
         icon: FiFile,
         to: "/prousuario/contratos-cuentas"
-    }
+    },
+    {
+        text: "Canal de Denuncias",
+        icon: FiBookOpen,
+        to: "https://mocana.shogunmonitor.com",
+        isExternalLink: true
+    },
 ];
 
 const buttonLink: IButtonLink = {

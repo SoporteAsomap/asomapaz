@@ -17,6 +17,10 @@ export const NavItem: React.FC<NavItemProps> = ({
     const [activeSubItem, setActiveSubItem] = useState<SubNavItem | null>(null);
     const [dropdownOffset, setDropdownOffset] = useState(0);
     const [pointerOffset, setPointerOffset] = useState(0);
+    
+    // 🔥 NUEVO ESTADO: Controla si se acaba de hacer clic para forzar el cierre
+    const [isClicked, setIsClicked] = useState(false); 
+    
     const navItemRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
@@ -31,22 +35,16 @@ export const NavItem: React.FC<NavItemProps> = ({
             const dropdownWidth = hasSubMenu ? 800 : 300;
             const viewportWidth = window.innerWidth;
 
-            // Calcular el centro del elemento
             const elementCenter = rect.left + (rect.width / 2);
-
-            // Calcular la posición inicial del dropdown
             let dropdownLeft = elementCenter - (dropdownWidth / 2);
 
-            // Asegurar que el dropdown no se salga de la pantalla
             if (dropdownLeft < 20) {
-                dropdownLeft = 20; // Margen mínimo desde la izquierda
+                dropdownLeft = 20; 
             } else if (dropdownLeft + dropdownWidth > viewportWidth - 20) {
-                dropdownLeft = viewportWidth - dropdownWidth - 20; // Margen mínimo desde la derecha
+                dropdownLeft = viewportWidth - dropdownWidth - 20; 
             }
 
             setDropdownOffset(dropdownLeft);
-
-            // La flecha siempre apunta al centro del elemento padre
             const arrowPosition = elementCenter - dropdownLeft;
             setPointerOffset(arrowPosition);
         };
@@ -69,14 +67,19 @@ export const NavItem: React.FC<NavItemProps> = ({
         }
     }, [dropdownItems]);
 
-    const handleLinkClick = (href: string) => {
-        if (href) {
-            if (isExternalLink) {
-                window.open(href, '_blank', 'noopener,noreferrer');
-            } else {
-                navigate(href);
-            }
-            onLinkClick();
+    const handleNavigation = (href: string, external?: boolean) => {
+        if (!href) return;
+
+
+        setIsClicked(true);
+    
+
+        if (onLinkClick) onLinkClick();
+
+        if (external) {
+            window.open(href, '_blank', 'noopener,noreferrer');
+        } else {
+            navigate(href);
         }
     };
 
@@ -92,22 +95,28 @@ export const NavItem: React.FC<NavItemProps> = ({
         <div
             ref={navItemRef}
             className={`relative group ${className}`}
+            // Si el usuario saca el mouse, aseguramos resetear el estado
+            onMouseLeave={() => setIsClicked(false)} 
         >
             {to ? (
                 isExternalLink ? (
-                    <a
+                   <a
                         href={to}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center cursor-pointer text-neutral-200 hover:text-primary-accent"
-                        onClick={() => onLinkClick()}
+                        onClick={() => {
+                            setIsClicked(true);
+                            
+                            if (onLinkClick) onLinkClick();
+                        }}
                     >
                         {renderContent()}
                     </a>
                 ) : (
                     <div
                         className="flex items-center cursor-pointer text-neutral-200 hover:text-primary-accent"
-                        onClick={() => handleLinkClick(to)}
+                        onClick={() => handleNavigation(to, false)}
                     >
                         {renderContent()}
                     </div>
@@ -117,11 +126,14 @@ export const NavItem: React.FC<NavItemProps> = ({
                     {renderContent()}
                 </div>
             )}
+            
             {hasDropdown && dropdownItems && dropdownItems.length > 0 && (
                 <div className="fixed w-screen h-screen top-0 left-0 pointer-events-none">
                     <div
-                        className={`absolute mt-2 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 bg-white pointer-events-auto ${hasSubMenu ? 'w-[800px]' : 'w-[300px]'
-                            }`}
+                        // 🔥 AQUÍ SE APLICA EL EFECTO: Si está clickeado, quitamos las clases de hover temporalmente
+                        className={`absolute mt-2 rounded-lg shadow-lg opacity-0 invisible transition-all duration-300 bg-white pointer-events-auto ${
+                            !isClicked ? 'group-hover:opacity-100 group-hover:visible' : ''
+                        } ${hasSubMenu ? 'w-[890px]' : 'w-[340px]'}`}
                         style={{
                             top: navItemRef.current?.getBoundingClientRect()?.bottom ?? 0 + 4,
                             left: dropdownOffset ? `${dropdownOffset}px` : '0'
@@ -154,17 +166,13 @@ export const NavItem: React.FC<NavItemProps> = ({
                                                     }}
                                                     onClick={() => {
                                                         if (item.to) {
-                                                            if (item.isExternalLink) {
-                                                                window.open(item.to, '_blank', 'noopener,noreferrer');
-                                                                onLinkClick();
-                                                            } else {
-                                                                handleLinkClick(item.to);
-                                                            }
+                                                            // Usamos la nueva función
+                                                            handleNavigation(item.to, item.isExternalLink);
                                                         }
                                                     }}
                                                 >
-                                                    <IconComponent className="w-5 h-5" />
-                                                    <span className="text-sm">{item.text}</span>
+                                                    <IconComponent className="w-5 h-5 flex-shrink-0" />
+                                                    <span className="text-sm truncate">{item.text}</span>
                                                 </div>
                                             );
                                         })}
@@ -178,7 +186,7 @@ export const NavItem: React.FC<NavItemProps> = ({
                                                             key={index}
                                                             className="block p-2.5 rounded-md text-sm text-neutral-200 hover:bg-secondary cursor-pointer transition-colors duration-200"
                                                             onMouseEnter={() => setActiveSubItem(subItem)}
-                                                            onClick={() => handleLinkClick(subItem.href)}
+                                                            onClick={() => handleNavigation(subItem.href, false)}
                                                         >
                                                             {subItem.text}
                                                         </span>
@@ -193,7 +201,7 @@ export const NavItem: React.FC<NavItemProps> = ({
                                                             <img src={activeSubItem.image} alt={activeSubItem.text} className="w-full h-36 rounded-lg object-cover" />
                                                         </div>
                                                         <button
-                                                            onClick={() => handleLinkClick(activeSubItem.href)}
+                                                            onClick={() => handleNavigation(activeSubItem.href, false)}
                                                             className="block w-full px-3 py-2 text-sm text-center text-white transition-colors duration-300 rounded-md bg-primary hover:bg-primary-accent"
                                                         >
                                                             Más información
@@ -206,7 +214,7 @@ export const NavItem: React.FC<NavItemProps> = ({
                                                             <img src={activeItem.image} alt={activeItem.text} className="w-full h-36 rounded-lg object-cover" />
                                                         </div>
                                                         <button
-                                                            onClick={() => activeItem.to ? handleLinkClick(activeItem.to) : null}
+                                                            onClick={() => activeItem.to ? handleNavigation(activeItem.to, activeItem.isExternalLink) : null}
                                                             className="block w-full px-3 py-2 text-sm text-center text-white transition-colors duration-300 rounded-md bg-primary hover:bg-primary-accent"
                                                         >
                                                             {activeItem.to ? 'Ver todos' : 'Solicítalo!'}

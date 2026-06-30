@@ -43,7 +43,7 @@ const SideNav: React.FC = () => {
                     <div className={`relative flex h-full w-full items-center ${isLoanPage ? 'justify-between px-4 sm:px-5' : 'justify-end pr-3 sm:pr-4'}`}>
                         {isLoanPage && (
                             <span className="pr-3 text-left text-xs font-semibold uppercase tracking-wide text-white sm:text-sm">
-                                Calcula tu cuota
+                                Calcula tu Préstamo
                             </span>
                         )}
                         <motion.div

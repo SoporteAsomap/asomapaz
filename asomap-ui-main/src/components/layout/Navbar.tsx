@@ -14,7 +14,7 @@ import { menuItems, buttonLink } from '@mocks';
 export const SimpleNavItem: React.FC<{ text: string; to: string; className?: string }> = ({ text, to, className }) => (
   <Link
     to={to}
-    className={`flex items-center cursor-pointer text-neutral-200 hover:text-primary-accent transition-colors duration-200 ${className}`}
+    className={`flex items-center cursor-pointer transition-colors duration-200 ${className}`}
   >
     <span>{text}</span>
   </Link>
@@ -35,159 +35,131 @@ export const Navbar: React.FC<NavbarProps> = ({
     window.open(buttonLink.appLink, '_blank', 'noopener,noreferrer');
   };
 
+  // Estilo base para los links del menú de escritorio para evitar repetición
+  // Incluye 'whitespace-nowrap' para evitar saltos de línea y un efecto de subrayado animado
+  const navItemClassName = "text-gray-700 hover:text-primary font-semibold text-[13px] xl:text-[14px] whitespace-nowrap transition-colors duration-200 px-2 xl:px-3 py-2 relative block after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary hover:after:w-full after:transition-all after:duration-300";
+
   return (
     <>
-      <nav className="fixed top-[32px] left-0 right-0 z-40 bg-gradient-to-b from-white to-white/98 backdrop-blur-sm h-[48px]">
-        <div className="container mx-auto px-3 sm:px-4 max-w-7xl h-full">
-          <div className="flex items-center justify-between h-full">
-            {/* Logo */}
-            <Link
-              to="/"
-              className="flex items-center"
-              onClick={() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              aria-label="Asomap Logo - Ir a inicio"
-            >
-              <img
-                src={Logo}
-                alt="Asomap Logo"
-                className="w-[100px] h-[30px] sm:w-[120px] sm:h-[34px] lg:w-[140px] lg:h-[38px] transition-all duration-200"
+      <nav className="fixed top-[32px] left-0 right-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 h-[68px] transition-all duration-300">
+        <div className="container mx-auto px-4 max-w-7xl h-full flex items-center justify-between">
+          
+          {/* Logo */}
+          <Link
+            to="/"
+            className="flex items-center flex-shrink-0"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            aria-label="Asomap Logo - Ir a inicio"
+          >
+            <img
+              src={Logo}
+              alt="Asomap Logo"
+              className="w-[105px] h-[32px] sm:w-[120px] sm:h-[34px] lg:w-[135px] lg:h-[36px] transition-transform duration-200 hover:scale-[1.02]"
+            />
+          </Link>
+
+          {/* Desktop Menu - Mejorado con flex-grow para aprovechar todo el espacio horizontal */}
+          <div className="hidden lg:flex flex-grow justify-center mx-4">
+            <div className="flex items-center space-x-1 xl:space-x-2 max-w-full overflow-x-auto no-scrollbar">
+              <NavItem
+                text="Sobre Nosotros"
+                hasDropdown
+                dropdownItems={aboutItems}
+                onLinkClick={() => { }}
+                className={navItemClassName}
               />
-            </Link>
-
-            {/* Desktop Menu */}
-            <div className="hidden lg:flex lg:items-center">
-              <div className="flex items-center text-neutral-100">
-                <NavItem
-                  text="Sobre Nosotros"
-                  hasDropdown
-                  dropdownItems={aboutItems}
-                  onLinkClick={() => { }}
-                  className="hover:text-primary-accent text-[11px] text-[12px] text-[13px] 2xl:text-base transition-all duration-200 px-1 lg:px-1.5 xl:px-2"
-                />
-                <NavItem
-                  text="Productos"
-                  hasDropdown
-                  dropdownItems={productItems}
-                  onLinkClick={() => { }}
-                  className="hover:text-primary-accent text-[11px] text-[12px] text-[13px] 2xl:text-base transition-all duration-200 px-1 lg:px-1.5 xl:px-2"
-                />
-                <SimpleNavItem
-                  text="Servicios"
-                  to="/servicios"
-                  className="text-[11px] text-[12px] text-[13px] 2xl:text-base hover:text-primary-accent px-1 lg:px-1.5 xl:px-2"
-                />
-                <NavItem
-                  text="Novedades"
-                  hasDropdown
-                  dropdownItems={newsItems}
-                  onLinkClick={() => { }}
-                  className="hover:text-primary-accent text-[11px] text-[12px] text-[13px] 2xl:text-base transition-all duration-200 px-1 lg:px-1.5 xl:px-2"
-                />
-                <NavItem
-                  text="Orientación Financiera"
-                  hasDropdown
-                  dropdownItems={financialGuidanceItems}
-                  onLinkClick={() => { }}
-                  className="hover:text-primary-accent text-[11px] text-[12px] text-[13px] 2xl:text-base transition-all duration-200 px-1 lg:px-1.5 xl:px-2"
-                />
-                <NavItem
-                  text="Prousuario"
-                  hasDropdown
-                  dropdownItems={userSupportItems.map(item => ({
-                    ...item,
-                    isExternalLink: item.isExternalLink
-                  }))}
-                  onLinkClick={() => { }}
-                  className="hover:text-primary-accent text-[11px] text-[12px] text-[13px] 2xl:text-base transition-all duration-200 px-1 lg:px-1.5 xl:px-2"
-                />
-              </div>
-
-              {/* Desktop Search Bar */}
-              <div className="hidden lg:block pl-1 lg:pl-1.5 xl:pl-2">
-                <SearchBar
-                  isOpen={isSearchOpen}
-                  onToggle={() => setIsSearchOpen(!isSearchOpen)}
-                  isMobile={false}
-                  className="scale-90 lg:scale-95 xl:scale-100"
-                />
-              </div>
-
-              {/* Desktop Action Buttons */}
-              <div className="hidden lg:flex pl-1 lg:pl-1.5 xl:pl-2">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button
-                    className="px-2.5 py-1 xs:py-1.5 sm:py-1.5 text-[11px] xs:text-xs sm:text-xs text-white bg-orange-400 hover:bg-primary rounded-full transition-colors duration-300"
-                    onClick={handlePaymentClick}
-                  >
-                    Asomap Banking
-                  </Button>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{
-                    scale: 1.1,
-                    rotate: [0, 10, -10, 0],
-                    transition: {
-                      rotate: {
-                        repeat: Infinity,
-                        duration: 1,
-                        ease: "easeInOut"
-                      }
-                    }
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                  animate={{
-                    y: [-2, 2, -2],
-                    scale: [1, 1.05, 1],
-                    transition: {
-                      y: {
-                        repeat: Infinity,
-                        duration: 1.5,
-                        ease: "easeInOut"
-                      },
-                      scale: {
-                        repeat: Infinity,
-                        duration: 2,
-                        ease: "easeInOut"
-                      }
-                    }
-                  }}
-                  className="ml-1 lg:ml-1.5 xl:ml-2 relative"
-                >
-                  <div className="absolute inset-0 rounded-full bg-primary-accent/20 animate-ping"></div>
-                  <Link
-                    to="/locations/map"
-                    className="flex items-center justify-center w-6 h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 text-gray-600 transition-colors hover:text-primary rounded-full hover:bg-gray-100/50 group relative"
-                  >
-                    <IoLocationOutline className="w-3 h-3 lg:w-4 lg:h-4 xl:w-5 xl:h-5 text-primary-accent group-hover:text-primary transition-colors" />
-                  </Link>
-                </motion.div>
-              </div>
+              <NavItem
+                text="Productos"
+                hasDropdown
+                dropdownItems={productItems}
+                onLinkClick={() => { }}
+                className={navItemClassName}
+              />
+              <SimpleNavItem
+                text="Servicios"
+                to="/servicios"
+                className={navItemClassName}
+              />
+              <NavItem
+                text="Novedades"
+                hasDropdown
+                dropdownItems={newsItems}
+                onLinkClick={() => { }}
+                className={navItemClassName}
+              />
+              <NavItem
+                text="Orientación Financiera"
+                hasDropdown
+                dropdownItems={financialGuidanceItems}
+                onLinkClick={() => { }}
+                className={navItemClassName}
+              />
+              <NavItem
+                text="Prousuario"
+                hasDropdown
+                dropdownItems={userSupportItems.map(item => ({
+                  ...item,
+                  isExternalLink: item.isExternalLink
+                }))}
+                onLinkClick={() => { }}
+                className={navItemClassName}
+              />
             </div>
+          </div>
 
-            {/* Mobile Menu Toggle */}
-            <div className="flex items-center space-x-2 lg:hidden">
+          {/* Desktop Action Buttons - flex-shrink-0 evita que los botones se achiquen */}
+          <div className="hidden lg:flex items-center flex-shrink-0 space-x-3 pl-2">
+            <div className="w-[180px] xl:w-[200px] flex justify-end">
               <SearchBar
                 isOpen={isSearchOpen}
                 onToggle={() => setIsSearchOpen(!isSearchOpen)}
-                isMobile={true}
-                className="scale-90"
+                isMobile={false}
+                className="w-full"
               />
-              <motion.div whileTap={{ scale: 0.95 }}>
-                <MenuToggle
-                  isOpen={isMenuOpen}
-                  onToggle={() => setIsMenuOpen(!isMenuOpen)}
-                  className="text-neutral-100 hover:text-primary-accent transition-colors duration-200"
-                />
-              </motion.div>
             </div>
+
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="flex-shrink-0">
+              <Button
+                className="px-4 xl:px-5 py-2 text-xs xl:text-sm font-bold text-white bg-[#F58220] hover:bg-[#e0751a] rounded-full transition-all duration-300 shadow-sm hover:shadow-md whitespace-nowrap"
+                onClick={handlePaymentClick}
+              >
+                Asomap Banking
+              </Button>
+            </motion.div>
+
+            <Link
+              to="/locations/map"
+              className="flex items-center justify-center w-9 h-9 text-gray-500 hover:text-primary transition-colors rounded-full hover:bg-gray-100 flex-shrink-0"
+              title="Sucursales"
+            >
+              <IoLocationOutline className="w-5 h-5 xl:w-6 xl:h-6" />
+            </Link>
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="flex items-center space-x-2 lg:hidden">
+            <SearchBar
+              isOpen={isSearchOpen}
+              onToggle={() => setIsSearchOpen(!isSearchOpen)}
+              isMobile={true}
+              className="scale-90"
+            />
+            <motion.div whileTap={{ scale: 0.95 }}>
+              <MenuToggle
+                isOpen={isMenuOpen}
+                onToggle={() => setIsMenuOpen(!isMenuOpen)}
+                className="text-gray-700 hover:text-primary transition-colors duration-200"
+              />
+            </motion.div>
           </div>
         </div>
       </nav>
-      {/* Spacer to push content below navbar */}
-      <div className="h-[80px]" />
+      
+      {/* Spacer */}
+      <div className="h-[100px]" />
+      
       {/* Mobile Menu */}
       <MobileMenu
         isOpen={isMenuOpen}

@@ -20,7 +20,7 @@ export const savingTipsService = {
       const response = await httpClient.get<ISavingTipsAPIResponse>(ENDPOINTS.COLLECTIONS.FINANCIAL_GUIDANCE.SAVING_TIPS);
       
       // Filtrar solo consejos activos y transformar datos
-      const tips: ISavingTipData[] = response.data.results
+      const tips: ISavingTipData[] = response.data
         .filter(tip => tip.is_active)
         .sort((a, b) => a.order - b.order)
         .map(tip => ({
@@ -48,7 +48,7 @@ export const savingTipsService = {
       const response = await httpClient.get<ISliderSlidesAPIResponse>(ENDPOINTS.COLLECTIONS.FINANCIAL_GUIDANCE.SLIDER_SLIDES);
       
       // Filtrar solo slides activos y transformar datos
-      const slides: ISliderSlideData[] = response.data.results
+      const slides: ISliderSlideData[] = response.data
         .filter(slide => slide.is_active)
         .sort((a, b) => a.order - b.order)
         .map(slide => ({
@@ -74,7 +74,7 @@ export const savingTipsService = {
       const response = await httpClient.get<IFAQAPIResponse>(ENDPOINTS.COLLECTIONS.FINANCIAL_GUIDANCE.FAQ);
       
       // Filtrar solo FAQ activos y transformar datos
-      const faqItems: IFAQItemData[] = response.data.results
+      const faqItems: IFAQItemData[] = response.data
         .filter(item => item.is_active)
         .sort((a, b) => a.order - b.order)
         .map(item => ({

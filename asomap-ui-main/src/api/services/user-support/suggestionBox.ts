@@ -22,12 +22,23 @@ export const suggestionBoxService = {
 
       debugLog('[SuggestionBoxService] API response:', response.data);
 
-      if (!response.data.results || response.data.results.length === 0) {
+      // if (!response.data.results || response.data.results.length === 0) {
+      //   throw new Error('No provinces data found');
+      // }
+
+      // // Transformar datos de la API al formato del frontend
+      // const transformedData: IProvinceData[] = response.data.results.map(province => ({
+      //   id: province.id,
+      //   name: province.name
+      // }));
+
+
+      if (!response.data || response.data.length === 0) {
         throw new Error('No provinces data found');
       }
 
-      // Transformar datos de la API al formato del frontend
-      const transformedData: IProvinceData[] = response.data.results.map(province => ({
+
+      const transformedData: IProvinceData[] = response.data.map((province: any) => ({
         id: province.id,
         name: province.name
       }));

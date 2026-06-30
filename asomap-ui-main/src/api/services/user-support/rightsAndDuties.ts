@@ -17,11 +17,18 @@ export const rightsAndDutiesService = {
 
       debugLog('[RightsAndDutiesService] API response:', response.data);
 
-      if (!response.data.results || response.data.results.length === 0) {
+      if (!response.data || response.data.length === 0) {
         throw new Error('No rights and duties data found');
       }
 
-      const apiData = response.data.results[0];
+      // Tomamos directamente el primer elemento del array que nos manda Django
+      const apiData = response.data[0];
+
+      // if (!response.data.results || response.data.results.length === 0) {
+      //   throw new Error('No rights and duties data found');
+      // }
+
+      // const apiData = response.data.results[0];
 
       // Transformar datos de la API al formato del frontend
       const transformedData: IRightsAndDutiesData = {

@@ -23,27 +23,14 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
 
+  // Construimos la URL de previsualización forzando la página 1 y ocultando la barra de herramientas
+  const previewUrl = `${url}#page=1&view=FitH&toolbar=0`;
+
   const styles: { [key: string]: CSSProperties } = {
     container: {
       height,
       ...customStyles
     },
-    customScrollbar: {
-      '&::-webkit-scrollbar': {
-        width: '4px',
-        height: '4px',
-      } as CSSProperties,
-      '&::-webkit-scrollbar-track': {
-        background: 'transparent',
-      } as CSSProperties,
-      '&::-webkit-scrollbar-thumb': {
-        background: `rgba(43, 75, 169, 0.1)`,
-        borderRadius: '2px',
-      } as CSSProperties,
-      '&::-webkit-scrollbar-thumb:hover': {
-        background: `rgba(43, 75, 169, 0.2)`,
-      } as CSSProperties,
-    } as CSSProperties,
   };
 
   const getOpenButtonPosition = (): CSSProperties => {
@@ -61,7 +48,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
     }
   };
 
-  const handleIframeLoad = () => {
+  const handleObjectLoad = () => {
     setIsLoading(false);
     setHasLoaded(true);
     setIsLoadingPreview(false);
@@ -77,6 +64,9 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
   const handleMouseLeave = () => {
     setIsHovered(false);
   };
+
+  // Lógica para mostrar el botón: si está cargando (!hasLoaded) o si el mouse está encima
+  const shouldShowButton = !hasLoaded || isHovered;
 
   return (
     <div 
@@ -124,17 +114,19 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
         <motion.button
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ 
-            opacity: isHovered ? 1 : 0,
-            scale: isHovered ? 1 : 0.9,
+            opacity: shouldShowButton ? 1 : 0,
+            scale: shouldShowButton ? 1 : 0.9,
           }}
           transition={{ duration: 0.2 }}
+          // Al hacer clic, enviamos a la URL original para que vean el PDF completo
           onClick={() => window.open(url, '_blank')}
+          // Se cambió el z-10 por z-40 para que se pueda clickear por encima de la pantalla de carga
           className="absolute p-1.5 sm:p-2.5 bg-white hover:bg-[#2B4BA9] text-[#2B4BA9] hover:text-white rounded-lg shadow-lg backdrop-blur-[2px] z-10 transition-all duration-300"
           style={getOpenButtonPosition()}
-          title="Abrir en nueva pestaña"
+          title="Abrir documento completo"
         >
           <svg 
-            className="w-3 h-3 sm:w-4 sm:h-4" 
+            className="w-4 h-4 sm:w-5 sm:h-5" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
@@ -149,35 +141,28 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({
         </motion.button>
       )}
 
-      <div 
-        className="w-full h-full overflow-auto bg-gradient-to-br from-gray-50/30 to-white/30"
-        style={styles.customScrollbar}
-      >
+      <div className="w-full h-full overflow-hidden bg-gradient-to-br from-gray-50/30 to-white/30">
         {(isHovered || hasLoaded) && (
-          <iframe
-            src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
+          <object
+            data={previewUrl}
+            type="application/pdf"
             className="w-full h-full"
-            style={{ border: 'none', background: 'transparent' }}
-            onLoad={handleIframeLoad}
-            title="Vista previa del PDF"
-          />
-        )}
-        {!isHovered && !hasLoaded && (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
-            <svg 
-              className="w-8 h-8 sm:w-12 sm:h-12 opacity-50" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={1.5} 
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
-              />
-            </svg>
-          </div>
+            onLoad={handleObjectLoad}
+          >
+            <div className="flex flex-col items-center justify-center h-full p-4 text-center">
+              <p className="text-gray-600 mb-4 text-sm sm:text-base">
+                Tu navegador no soporta la previsualización directa de PDFs.
+              </p>
+              <a 
+                href={url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="px-4 py-2 bg-[#2B4BA9] text-white rounded-lg hover:bg-blue-800 transition-colors text-sm sm:text-base font-medium shadow-sm"
+              >
+                Descargar Memoria
+              </a>
+            </div>
+          </object>
         )}
       </div>
     </div>

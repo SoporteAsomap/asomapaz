@@ -4,6 +4,7 @@ import { MdEmail } from 'react-icons/md';
 import { FaXTwitter } from "react-icons/fa6";
 import { FaMapMarkerAlt, FaInstagram } from 'react-icons/fa';
 import Logo from '@assets/Logo.svg';
+import SSB from '@assets/SB.jpg';
 
 export interface FooterItem {
     icon?: React.ElementType;
@@ -157,10 +158,10 @@ export const footerData: FooterData = {
         },
         certifications: [
             {
-                image: "https://www.asomap.com.do/wp-content/themes/asociacionmocana/images/sellob.png",
+                image: SSB,
                 alt: "SSB Logo",
                 url: "https://sb.gob.do/supervisados/entidades-de-intermediacion-financiera/asociacion-mocana/",
-                className: "w-full h-full object-contain filter invert sepia-100 saturate-1000 hue-rotate-190 p-2 transform group-hover:scale-110 transition-transform duration-300"
+                className: "w-full h-full object-contain p-2 transform group-hover:scale-110 transition-transform duration-300"
             },
             {
                 image: "https://certificaciones.uaf.gob.do/certificados/UAF00151OKME.png",

@@ -94,7 +94,7 @@ const Memories: React.FC = () => {
         <div className="min-h-screen bg-gradient-to-b from-white to-blue-50/30">
           {/* Hero Banner */}
           <motion.div
-            className="relative h-[120px] sm:h-[140px] bg-[#FBE3D2] py-4 sm:py-6 rounded-b-[30px] sm:rounded-b-[50px]"
+            className="relative h-[120px] sm:h-[140px] bg-[#FBE3D2] py-4 sm:py-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}

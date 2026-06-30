@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { cardsService } from '@/api';
 import type { ICardData, ICardBenefit } from '@/interfaces';
+// Iconos modernos
+import { FaCheckCircle, FaInfoCircle, FaStar, FaCreditCard } from 'react-icons/fa';
 
 const CardDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -16,17 +18,8 @@ const CardDetail: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-
         const cards = await cardsService.getAllCards();
-
-        const card = cards.find((item: any) => {
-          const cardSlug = String(item.title || '')
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '');
-
-          return cardSlug === slug;
-        });
+        const card = cards.find((item: any) => item.slug === slug);
 
         if (card) {
           const normalizedBenefits: ICardBenefit[] = Array.isArray(card.benefits)
@@ -36,7 +29,7 @@ const CardDetail: React.FC = () => {
               }))
             : [];
 
-          const normalizedCard: ICardData = {
+          setCardData({
             ...card,
             id: Number(card.id),
             bannerImage: card.bannerImage || '',
@@ -46,9 +39,7 @@ const CardDetail: React.FC = () => {
             benefits: normalizedBenefits,
             features: Array.isArray(card.features) ? card.features : [],
             requirements: Array.isArray(card.requirements) ? card.requirements : [],
-          };
-
-          setCardData(normalizedCard);
+          });
         } else {
           setError('Tarjeta no encontrada');
         }
@@ -59,114 +50,108 @@ const CardDetail: React.FC = () => {
       }
     };
 
-    if (slug) {
-      fetchCardData();
-    }
+    if (slug) fetchCardData();
   }, [slug]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-      },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando tarjeta...</p>
-        </div>
-      </div>
-    );
-  }
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
 
-  if (error || !cardData) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <p className="text-red-500 mb-4">{error || 'Tarjeta no encontrada'}</p>
-          <button
-            onClick={() => navigate('/productos')}
-            className="px-4 py-2 bg-primary text-white rounded"
-          >
-            Volver
-          </button>
-        </div>
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2B4BA9]"></div>
+    </div>
+  );
+
+  if (error || !cardData) return (
+    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+      <div className="text-center bg-white p-8 rounded-2xl shadow-sm">
+        <p className="text-red-500 mb-6">{error || 'Tarjeta no encontrada'}</p>
+        <button onClick={() => navigate('/productos')} className="px-6 py-2 bg-[#2B4BA9] text-white rounded-full">Volver</button>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {cardData.bannerImage && (
-        <div className="w-full h-[300px] md:h-[400px] overflow-hidden">
-          <img
-            src={cardData.bannerImage}
-            alt={cardData.title}
-            className="w-full h-full object-cover"
-          />
+    <div className="bg-[#F8FAFC] min-h-screen pb-20">
+      {/* BANNER DINÁMICO */}
+      {cardData.bannerImage ? (
+        <div className="relative -mt-[100px] w-full h-[400px] overflow-hidden z-10">
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1a2c6b]/80 via-[#2B4BA9]/30 to-transparent z-10"></div>
+          <img src={cardData.bannerImage} alt={cardData.title} className="w-full h-full object-cover" />
+          <div className="absolute bottom-0 left-0 w-full z-20 pb-16 pt-8">
+            <div className="container mx-auto px-4 lg:px-8">
+              <motion.h1 variants={sectionVariants} initial="hidden" animate="visible" className="text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+                {cardData.title}
+              </motion.h1>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="relative -mt-[100px] pt-[150px] pb-24 bg-gradient-to-r from-[#2B4BA9] to-[#1a3072] z-10">
+          <div className="container mx-auto px-4 lg:px-8">
+            <h1 className="text-4xl lg:text-5xl font-extrabold text-white">{cardData.title}</h1>
+          </div>
         </div>
       )}
 
-      <div className="container mx-auto px-4 py-10">
-        <motion.div variants={sectionVariants} initial="hidden" animate="visible">
-          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            {cardData.title}
-          </h1>
+      {/* CONTENIDO PRINCIPAL */}
+      <div className="container mx-auto px-4 lg:px-8 relative z-20 -mt-8">
+        <motion.div 
+          className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-10"
+          variants={staggerContainer} initial="hidden" animate="visible"
+        >
+          <motion.p variants={sectionVariants} className="text-gray-700 text-lg leading-relaxed mb-10 text-justify">
+            {cardData.description}
+          </motion.p>
 
-          <p className="text-gray-700 mb-6">{cardData.description}</p>
-
-          {cardData.cardImage && (
-            <img
-              src={cardData.cardImage}
-              alt={cardData.title}
-              className="w-full max-w-xl mb-6 rounded-lg shadow"
-            />
-          )}
-
-          {cardData.features?.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">Características</h2>
-              <ul className="list-disc pl-5 text-gray-700">
-                {cardData.features.map((feature: string, index: number) => (
-                  <li key={index}>{feature}</li>
-                ))}
-              </ul>
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Columna Izquierda: Imagen + Características */}
+            <div className="space-y-8">
+              {cardData.cardImage && (
+                <motion.div variants={sectionVariants} className="flex justify-center">
+                  <img src={cardData.cardImage} alt={cardData.title} className="w-full max-w-sm rounded-2xl shadow-lg border border-gray-100" />
+                </motion.div>
+              )}
+              
+              {cardData.features?.length > 0 && (
+                <motion.div variants={sectionVariants} className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100/50">
+                  <div className="flex items-center mb-4 text-[#2B4BA9]"><FaInfoCircle className="mr-2" /> <h2 className="font-bold text-xl">Características</h2></div>
+                  <ul className="space-y-3">{cardData.features.map((f, i) => <li key={i} className="flex items-center text-gray-700"><FaCreditCard className="text-[#F58220] mr-3" /> {f}</li>)}</ul>
+                </motion.div>
+              )}
             </div>
-          )}
 
-          {cardData.requirements?.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">Requisitos</h2>
-              <ul className="list-disc pl-5 text-gray-700">
-                {cardData.requirements.map((req: string, index: number) => (
-                  <li key={index}>{req}</li>
-                ))}
-              </ul>
+            {/* Columna Derecha: Beneficios y Requisitos */}
+            <div className="space-y-8">
+              {cardData.benefits?.length > 0 && (
+                <motion.div variants={sectionVariants}>
+                  <div className="flex items-center mb-6 text-[#2B4BA9]"><FaStar className="text-[#F58220] mr-2" /> <h2 className="font-bold text-2xl">Beneficios</h2></div>
+                  <div className="grid gap-4">{cardData.benefits.map((b, i) => (
+                    <div key={i} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-start">
+                      <FaCheckCircle className="text-[#2B4BA9] mt-1 mr-4 flex-shrink-0" />
+                      <p className="text-gray-700">{b.text}</p>
+                    </div>
+                  ))}</div>
+                </motion.div>
+              )}
+              
+              {cardData.requirements?.length > 0 && (
+                <motion.div variants={sectionVariants} className="bg-orange-50/50 p-6 rounded-2xl border border-orange-100/50">
+                  <div className="flex items-center mb-4 text-[#F58220]"><FaCheckCircle className="mr-2" /> <h2 className="font-bold text-xl">Requisitos</h2></div>
+                  <ul className="space-y-3">{cardData.requirements.map((r, i) => <li key={i} className="flex items-start text-gray-700"><span className="w-2 h-2 rounded-full bg-[#2B4BA9] mt-2 mr-3 flex-shrink-0"></span> {r}</li>)}</ul>
+                </motion.div>
+              )}
             </div>
-          )}
-
-          {cardData.benefits?.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">Beneficios</h2>
-              <ul className="list-disc pl-5 text-gray-700">
-                {cardData.benefits.map((benefit: ICardBenefit, index: number) => (
-                  <li key={index}>{benefit.text}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          </div>
         </motion.div>
       </div>
     </div>
@@ -174,4 +159,3 @@ const CardDetail: React.FC = () => {
 };
 
 export default CardDetail;
-
