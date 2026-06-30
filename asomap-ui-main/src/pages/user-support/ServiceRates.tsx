@@ -100,7 +100,7 @@ const ServiceRates: React.FC = () => {
         <div className="min-h-screen bg-gradient-to-b from-white to-blue-50/30">
           {/* Hero Banner */}
           <motion.div
-            className="relative h-auto min-h-[120px] bg-[#FBE3D2] py-8 rounded-b-[50px]"
+            className="relative h-auto min-h-[120px] bg-[#FBE3D2] py-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}

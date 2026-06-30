@@ -19,11 +19,16 @@ export const serviceRatesService = {
 
       debugLog('[ServiceRatesService] API response:', response.data);
 
-      if (!response.data.results || response.data.results.length === 0) {
+      // if (!response.data.results || response.data.results.length === 0) {
+      //   throw new Error('No service rates data found');
+      // }
+
+      // const apiData = response.data.results[0];
+
+      if (!response.data || response.data.length === 0) {
         throw new Error('No service rates data found');
       }
-
-      const apiData = response.data.results[0];
+      const apiData = response.data[0];
 
       // Transformar datos de la API al formato del frontend
       const transformedData: IServiceRatesData = {

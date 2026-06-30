@@ -4,6 +4,8 @@ import { FaLightbulb } from 'react-icons/fa';
 import { IProduct } from '@interfaces';
 import { Button } from '@/components/ui';
 import { normalizeMediaUrl } from '@/utils/media';
+// 1. Importamos useNavigate para la navegación
+import { useNavigate } from 'react-router-dom';
 
 interface IProductsCardProps {
   products: IProduct[];
@@ -18,7 +20,23 @@ const ProductsCard: React.FC<IProductsCardProps> = ({
   sectionSubtitle = "Descubre las mejores opciones para ti",
   buttonText = "Conocer Más"
 }) => {
+  // 2. Inicializamos el hook de navegación
+  const navigate = useNavigate();
+
   const getImage = (url?: string) => normalizeMediaUrl(url || "");
+
+  // 3. Función lógica para redirigir
+  const handleNavigation = (title: string) => {
+    const lowerTitle = title.toLowerCase();
+
+    if (lowerTitle.includes('préstamo')) {
+      navigate('/productos/prestamo/prestamo-de-consumo');
+    } else if (lowerTitle.includes('ahorro')) {
+      navigate('/productos/cuenta/cuenta-clasica');
+    } else if (lowerTitle.includes('tarjeta')) {
+      navigate('/productos/tarjeta/tarjeta-de-debito');
+    }
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -137,17 +155,21 @@ const ProductsCard: React.FC<IProductsCardProps> = ({
                   className="flex items-center justify-between mt-6"
                   variants={cardVariants}
                 >
-                  <Button className="px-6 py-3 text-sm font-medium text-white bg-primary-accent rounded-lg shadow-lg hover:bg-primary transform hover:scale-105 transition-all duration-300">
+                  {/* 4. Aplicamos el onClick que llama a la función de navegación */}
+                  <Button 
+                    onClick={() => handleNavigation(product.title)}
+                    className="px-6 py-3 text-sm font-medium text-white bg-primary-accent rounded-lg shadow-lg hover:bg-primary transform hover:scale-105 transition-all duration-300 cursor-pointer"
+                  >
                     {buttonText}
                   </Button>
 
-                  <motion.button
+                  {/* <motion.button
                     className="text-primary hover:text-primary-accent transition-colors duration-300"
                     whileHover={{ scale: 1.2, rotate: 180 }}
                     transition={{ duration: 0.3 }}
                   >
                     <FaLightbulb size={24} />
-                  </motion.button>
+                  </motion.button> */}
                 </motion.div>
               </motion.div>
             </motion.div>

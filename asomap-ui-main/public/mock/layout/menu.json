@@ -188,7 +188,13 @@
             "text": "Contratos de adhesión",
             "icon": "FiFile",
             "to": "/prousuario/contratos-cuentas"
-        }
+        },
+        {
+            "text": "Canal de Denuncias",
+            "icon": "FiShield",
+            "to": "https://mocana.shogunmonitor.com",
+            "isExternalLink": true
+        },
     ],
     "buttonLink": {
         "appLink": "https://www.ibanking.asomap.com.do/onlinebanking"

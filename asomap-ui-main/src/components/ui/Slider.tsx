@@ -81,9 +81,9 @@ export const Slider: React.FC<ICarousel> = ({
   }
 
   return (
-    <div className={`relative w-full transition-all duration-300 rounded-b-[20px] sm:rounded-b-[30px] lg:rounded-b-[50px] overflow-hidden min-h-[300px] ${className} ${fullScreen ? 'max-h-screen' : 'max-h-none'} ${dimensions.heightClass} ${dimensions.aspectRatio}`}>
+    <div className={`relative w-full transition-all duration-300 overflow-hidden min-h-[300px] ${className} ${fullScreen ? 'max-h-screen' : 'max-h-none'} ${dimensions.heightClass} ${dimensions.aspectRatio}`}>
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-b-[20px] sm:rounded-b-[30px] lg:rounded-b-[50px]">
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
           <div className="w-8 h-8 border-4 rounded-full sm:w-10 sm:h-10 lg:w-12 lg:h-12 border-primary border-t-transparent animate-spin" />
         </div>
       )}

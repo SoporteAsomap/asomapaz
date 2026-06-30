@@ -38,7 +38,7 @@ const DynamicNewsBanner: React.FC<DynamicNewsBannerProps> = ({
     const currentNews = news[currentIndex];
 
     return (
-        <div className="relative h-[360px] sm:h-[400px] md:h-[450px] lg:h-[500px] -mt-[80px] rounded-b-[30px] sm:rounded-b-[50px] lg:rounded-b-[80px] overflow-hidden">
+        <div className="relative h-[360px] sm:h-[400px] md:h-[450px] lg:h-[500px] -mt-[80px] overflow-hidden">
             {/* Imagen de fondo */}
             <AnimatePresence mode="wait">
                 <motion.img
@@ -54,7 +54,7 @@ const DynamicNewsBanner: React.FC<DynamicNewsBannerProps> = ({
             </AnimatePresence>
 
             {/* Overlay gradiente */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent rounded-b-[30px] sm:rounded-b-[50px] lg:rounded-b-[80px]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
             {/* Contenido del banner */}
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white">

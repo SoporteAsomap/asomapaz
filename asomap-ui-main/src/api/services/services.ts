@@ -9,7 +9,7 @@ export const servicesService = {
         ENDPOINTS.COLLECTIONS.SERVICES.MAIN
       );
 
-      const raw = response.data;
+      const raw = response.data[0];
       const apiData = Array.isArray(raw?.results) ? raw.results[0] : raw;
 
       if (!apiData) return null;
