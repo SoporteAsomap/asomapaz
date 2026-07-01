@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useParams, useNavigate } from 'react-router-dom';
 import { certificatesService } from '@/api';
 import { FaCheckCircle, FaInfoCircle, FaStar, FaChartLine, FaQuestionCircle, FaHandHoldingUsd } from 'react-icons/fa';
+import { useParams } from 'react-router-dom';
 
 const CertificateDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [data, setData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetch = async () => {

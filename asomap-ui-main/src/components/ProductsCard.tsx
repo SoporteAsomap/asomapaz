@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaLightbulb } from 'react-icons/fa';
 import { IProduct } from '@interfaces';
 import { Button } from '@/components/ui';
 import { normalizeMediaUrl } from '@/utils/media';

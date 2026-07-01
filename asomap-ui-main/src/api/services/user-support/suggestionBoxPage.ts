@@ -17,19 +17,17 @@ export const suggestionBoxPageService = {
 
       debugLog('[SuggestionBoxPageService] API response:', response.data);
 
+      // Extracción segura del arreglo
+      const rawData: any[] = Array.isArray(response.data) 
+        ? response.data 
+        : (response.data as any)?.results || (response.data as any)?.data || [response.data];
 
-      if (!response.data || response.data.length === 0) {
+      if (!rawData || rawData.length === 0) {
         throw new Error('No suggestion box page data found');
       }
 
- 
-      const apiData = response.data[0];
-
-      // if (!response.data.results || response.data.results.length === 0) {
-      //   throw new Error('No suggestion box page data found');
-      // }
-
-      // const apiData = response.data.results[0];
+      // Tomamos el primer elemento de manera segura
+      const apiData = rawData[0];
 
       // Transformar datos de la API al formato del frontend
       const transformedData: ISuggestionBoxPageData = {
