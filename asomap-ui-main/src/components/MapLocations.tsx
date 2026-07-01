@@ -128,7 +128,7 @@ const MapLocations: React.FC = () => {
 
   const buildDirectionsUrl = (location: Location) => {
     const dest = `${location.coordinates.lat},${location.coordinates.lng}`;
-    return `https://www.google.com/maps/dir/?api=1&destination=${dest}`; // URL de Google Maps corregida
+    return `https://www.google.com/maps/dir/?api=1&destination=${dest}`; 
   };
 
   useEffect(() => {
@@ -192,7 +192,6 @@ const MapLocations: React.FC = () => {
     if (map) map.setView(userCenter, 15, { animate: true });
   };
 
-  // Componente de Tarjeta de Ubicación Modernizada
   const LocationCard = ({ location }: { location: Location }) => {
     const isExpanded = expandedLocations.has(location.id);
     const isSelected = selectedLocation?.id === location.id;

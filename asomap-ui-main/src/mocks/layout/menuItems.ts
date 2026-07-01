@@ -23,7 +23,6 @@ import {
 import { IoCardSharp } from "react-icons/io5";
 
 import { MainNavItem, IButtonLink } from '@interfaces';
-import { FaBookOpen } from 'react-icons/fa6';
 
 export const aboutItems: MainNavItem[] = [
     {

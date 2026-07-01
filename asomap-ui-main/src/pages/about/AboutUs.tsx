@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { AboutResponse } from '@/interfaces';
 import { aboutService } from '@/api';
-import { FaHandHoldingHeart, FaEye, FaRegLightbulb } from 'react-icons/fa';
 import { Spinner } from '@components/ui';
+import { FaEye, FaRegLightbulb } from 'react-icons/fa';
 
 const AboutUs: React.FC = () => {
   const location = useLocation();

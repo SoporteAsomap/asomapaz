@@ -19,25 +19,28 @@ export const serviceRatesService = {
 
       debugLog('[ServiceRatesService] API response:', response.data);
 
-      // if (!response.data.results || response.data.results.length === 0) {
-      //   throw new Error('No service rates data found');
-      // }
+      // Extracción segura del arreglo
+      const rawData: any[] = Array.isArray(response.data) 
+        ? response.data 
+        : (response.data as any)?.data || (response.data as any)?.results || [response.data];
 
-      // const apiData = response.data.results[0];
-
-      if (!response.data || response.data.length === 0) {
+      if (!rawData || rawData.length === 0) {
         throw new Error('No service rates data found');
       }
-      const apiData = response.data[0];
+      
+      // Tomamos el primer elemento del arreglo seguro
+      const apiData = rawData[0];
 
       // Transformar datos de la API al formato del frontend
       const transformedData: IServiceRatesData = {
         title: apiData.title,
         description: apiData.description,
-        categories: apiData.categories.map(category => ({
+        // Agregamos : any a category
+        categories: apiData.categories.map((category: any) => ({
           id: category.id,
           name: category.name,
-          rates: category.rates.map(rate => ({
+          // Agregamos : any a rate
+          rates: category.rates.map((rate: any) => ({
             id: rate.id,
             service: rate.service,
             description: rate.description,
@@ -67,15 +70,21 @@ export const serviceRatesService = {
 
       debugLog('[ServiceRatesService] Categories API response:', response.data);
 
-      if (!response.data.results || response.data.results.length === 0) {
+      // Extracción segura del arreglo para categories
+      const rawData: any[] = Array.isArray(response.data) 
+        ? response.data 
+        : (response.data as any)?.results || (response.data as any)?.data || [];
+
+      if (!rawData || rawData.length === 0) {
         throw new Error('No service categories data found');
       }
 
       // Transformar datos de la API al formato del frontend
-      const transformedData: IServiceCategoryData[] = response.data.results.map(category => ({
+      const transformedData: IServiceCategoryData[] = rawData.map((category: any) => ({
         id: category.id,
         name: category.name,
-        rates: category.rates.map(rate => ({
+        // Agregamos : any a rate
+        rates: category.rates.map((rate: any) => ({
           id: rate.id,
           service: rate.service,
           description: rate.description,

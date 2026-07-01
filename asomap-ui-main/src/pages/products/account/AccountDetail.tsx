@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { accountsService } from '@/api';
 import type { IAccountData, IAccountBenefit } from '@/interfaces';
-import cards from '../cards';
 // Nuevos iconos para estilizar las listas
 import { FaCheckCircle, FaInfoCircle, FaStar } from 'react-icons/fa';
 
