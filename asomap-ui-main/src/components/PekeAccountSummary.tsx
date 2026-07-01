@@ -17,9 +17,7 @@ const PekeAccountSummary: React.FC<PekeAccountSummaryProps> = ({
     description,
     buttonText,
     imageUrl,
-    imageAlt,
-    button_url
-}) => {
+    imageAlt}) => {
     const navigate = useNavigate();
 
     const containerVariants = {
@@ -45,12 +43,11 @@ const PekeAccountSummary: React.FC<PekeAccountSummaryProps> = ({
     };
 
     const handleButtonClick = () => {
-         navigate('/productos/cuenta/cuenta-pekes');
-        // if (button_url) {
-        //     window.open(button_url, '_blank');
-        // } else {
-        //     navigate('/productos/cuenta/cuenta-pekes');
-        // }
+       // if (button_url) {
+           // window.open(button_url, '_blank');
+       // } else {
+            navigate('/productos/cuenta/cuenta-pekes');
+       // }
     };
 
     return (
