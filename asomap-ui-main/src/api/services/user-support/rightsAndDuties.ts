@@ -17,30 +17,31 @@ export const rightsAndDutiesService = {
 
       debugLog('[RightsAndDutiesService] API response:', response.data);
 
-      if (!response.data || response.data.length === 0) {
+      // Convertimos a array seguro para evitar el error de "length" y el índice "0"
+      const rawData: any[] = Array.isArray(response.data) 
+        ? response.data 
+        : (response.data as any)?.data || (response.data as any)?.results || [response.data];
+
+      if (!rawData || rawData.length === 0) {
         throw new Error('No rights and duties data found');
       }
 
-      // Tomamos directamente el primer elemento del array que nos manda Django
-      const apiData = response.data[0];
-
-      // if (!response.data.results || response.data.results.length === 0) {
-      //   throw new Error('No rights and duties data found');
-      // }
-
-      // const apiData = response.data.results[0];
+      // Tomamos directamente el primer elemento del array seguro
+      const apiData = rawData[0];
 
       // Transformar datos de la API al formato del frontend
       const transformedData: IRightsAndDutiesData = {
         pageTitle: apiData.pageTitle,
         pageDescription: apiData.pageDescription,
-        sections: apiData.sections.map(section => ({
+        // Agregamos : any al map de section
+        sections: apiData.sections.map((section: any) => ({
           id: section.id,
           title: section.title,
           description: section.description,
           buttonText: section.button_text,
           additionalInfo: section.additional_info,
-          images: section.images.map(image => ({
+          // Agregamos : any al map de image
+          images: section.images.map((image: any) => ({
             id: image.id,
             src: image.src,
             alt: image.alt_text,
