@@ -65,7 +65,7 @@ const CertificateDetail: React.FC = () => {
                 <div className="flex items-center mb-6 text-[#2B4BA9]"><FaStar className="mr-3" /> <h2 className="text-xl font-bold">{data.benefits.title}</h2></div>
                 <div className="space-y-3">{data.benefits.items.map((item: any, i: number) => (
                   <div key={i} className="flex items-start bg-white p-3 rounded-lg text-sm md:text-base border border-blue-50 shadow-sm">
-                    <FaCheckCircle className="text-[#2B4BA9] mt-1 mr-3 flex-shrink-0" /> {typeof item === 'string' ? item : item.text}
+                    <FaCheckCircle className="text-[#2B4BA9] mt-1 mr-3 flex-shrink-0" /> {typeof item === 'string' ? item : item.title}
                   </div>
                 ))}</div>
               </div>
