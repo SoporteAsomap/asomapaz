@@ -19,11 +19,14 @@ export const savingTipsService = {
       
       const response = await httpClient.get<ISavingTipsAPIResponse>(ENDPOINTS.COLLECTIONS.FINANCIAL_GUIDANCE.SAVING_TIPS);
       
+      // Extraemos el arreglo de forma segura validando la estructura que devuelve Python
+      const rawData: any[] = Array.isArray(response.data) ? response.data : (response.data as any)?.data || (response.data as any)?.results || [];
+
       // Filtrar solo consejos activos y transformar datos
-      const tips: ISavingTipData[] = response.data
-        .filter(tip => tip.is_active)
-        .sort((a, b) => a.order - b.order)
-        .map(tip => ({
+      const tips: ISavingTipData[] = rawData
+        .filter((tip: any) => tip.is_active)
+        .sort((a: any, b: any) => a.order - b.order)
+        .map((tip: any) => ({
           id: tip.id,
           title: tip.title,
           description: tip.description,
@@ -47,11 +50,14 @@ export const savingTipsService = {
       
       const response = await httpClient.get<ISliderSlidesAPIResponse>(ENDPOINTS.COLLECTIONS.FINANCIAL_GUIDANCE.SLIDER_SLIDES);
       
+      // Extraemos el arreglo de forma segura
+      const rawData: any[] = Array.isArray(response.data) ? response.data : (response.data as any)?.data || (response.data as any)?.results || [];
+
       // Filtrar solo slides activos y transformar datos
-      const slides: ISliderSlideData[] = response.data
-        .filter(slide => slide.is_active)
-        .sort((a, b) => a.order - b.order)
-        .map(slide => ({
+      const slides: ISliderSlideData[] = rawData
+        .filter((slide: any) => slide.is_active)
+        .sort((a: any, b: any) => a.order - b.order)
+        .map((slide: any) => ({
           id: slide.id,
           image: slide.image_url || null, // Validación simple: null si no hay imagen
           title: slide.title,
@@ -73,11 +79,14 @@ export const savingTipsService = {
       
       const response = await httpClient.get<IFAQAPIResponse>(ENDPOINTS.COLLECTIONS.FINANCIAL_GUIDANCE.FAQ);
       
+      // Extraemos el arreglo de forma segura
+      const rawData: any[] = Array.isArray(response.data) ? response.data : (response.data as any)?.data || (response.data as any)?.results || [];
+
       // Filtrar solo FAQ activos y transformar datos
-      const faqItems: IFAQItemData[] = response.data
-        .filter(item => item.is_active)
-        .sort((a, b) => a.order - b.order)
-        .map(item => ({
+      const faqItems: IFAQItemData[] = rawData
+        .filter((item: any) => item.is_active)
+        .sort((a: any, b: any) => a.order - b.order)
+        .map((item: any) => ({
           id: item.id,
           question: item.question,
           answer: item.answer,
@@ -157,4 +166,3 @@ export const savingTipsService = {
     }
   }
 };
-
