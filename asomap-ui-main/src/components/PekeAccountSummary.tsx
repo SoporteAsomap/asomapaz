@@ -45,11 +45,12 @@ const PekeAccountSummary: React.FC<PekeAccountSummaryProps> = ({
     };
 
     const handleButtonClick = () => {
-        if (button_url) {
-            window.open(button_url, '_blank');
-        } else {
-            navigate('/productos/cuenta-pekes');
-        }
+         navigate('/productos/cuenta/cuenta-pekes');
+        // if (button_url) {
+        //     window.open(button_url, '_blank');
+        // } else {
+        //     navigate('/productos/cuenta/cuenta-pekes');
+        // }
     };
 
     return (
