@@ -17,7 +17,7 @@ const SideNav: React.FC = () => {
     return (
         <>
             <motion.div
-                className="fixed left-0 bottom-16 z-30 sm:bottom-20"
+                className="fixed left-0 bottom-0 z-30 sm:bottom-2"
                 initial={{ x: -32 }}
                 animate={{ x: isLoanPage ? -12 : -24 }}
                 whileHover={{ x: 0 }}
