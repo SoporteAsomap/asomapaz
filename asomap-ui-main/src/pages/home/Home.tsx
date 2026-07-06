@@ -143,7 +143,7 @@ const Home: React.FC = () => {
               slides={sliderData}
               fullScreen={false}
               className="w-full"
-              minHeight="400px"
+              height="h-[80vh]"
             />
           )}
         </motion.div>
@@ -158,7 +158,7 @@ const Home: React.FC = () => {
         ) : productData ? (
           <ProductsCard 
             products={productData.products}
-            sectionTitle={productData.section?.title || "Nuestros Productos ubicando datos"}
+            sectionTitle={productData.section?.title || "Nuestros Productos"}
             sectionSubtitle={productData.section?.subtitle || "Descubre las mejores opciones para ti"}
             buttonText={productData.buttonText || "Conocer Más"}
           />

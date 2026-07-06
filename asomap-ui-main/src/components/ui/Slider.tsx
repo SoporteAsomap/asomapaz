@@ -19,12 +19,13 @@ const NavigationButton: React.FC<{ direction: 'prev' | 'next'; onClick: () => vo
   );
 };
 
-export const Slider: React.FC<ICarousel> = ({
+export const Slider: React.FC<ICarousel& { height?: string }> = ({
   autoSlide = false,
   autoSlideInterval = 5000,
   slides = [],
   fullScreen = true,
   className = '',
+  height,
 }) => {
   const swiperRef = useRef<SwiperType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,6 +42,12 @@ export const Slider: React.FC<ICarousel> = ({
   });
 
   const updateDimensions = useCallback(() => {
+    // NUEVA LÓGICA: Si enviaste una altura desde Home, úsala y sal de aquí
+    if (height) {
+      setDimensions(prev => ({ ...prev, heightClass: height }));
+      return;
+    }
+
     const windowWidth = window.innerWidth;
     let heightClass = fullScreen ? 'h-screen' : 'h-auto';
     let aspectRatio = 'aspect-[21/9]';
@@ -53,11 +60,11 @@ export const Slider: React.FC<ICarousel> = ({
       if (!fullScreen) heightClass = 'h-[576px]';
     } else {
       aspectRatio = 'aspect-[21/9]';
-      if (!fullScreen) heightClass = 'h-[500px]';
+      if (!fullScreen) heightClass = 'h-[500px]'; // <--- Antes siempre entraba aquí
     }
 
     setDimensions({ heightClass, aspectRatio });
-  }, [fullScreen]);
+  }, [fullScreen, height]);
 
   useEffect(() => {
     updateDimensions();
