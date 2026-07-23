@@ -3,6 +3,7 @@ import { FaFacebookF, FaYoutube, FaLinkedinIn, FaWhatsapp, FaCopyright } from 'r
 import { MdEmail } from 'react-icons/md';
 import { FaXTwitter } from "react-icons/fa6";
 import { FaMapMarkerAlt, FaInstagram } from 'react-icons/fa';
+import commitmentPdf from '@/assets/Declaracion_de_Compromiso_GFXC.pdf';
 import Logo from '@assets/Logo.svg';
 import SSB from '@assets/SB.jpg';
 
@@ -68,7 +69,12 @@ export const footerData: FooterData = {
                 {
                     text: "Deberes y Derechos",
                     to: "/prousuario/derechos-deberes"
-                }
+                },
+                {
+                    text: 'Declaración de compromiso',
+                    to: commitmentPdf, 
+                    isExternalLink: true, 
+                },
             ]
         },
         services: {
