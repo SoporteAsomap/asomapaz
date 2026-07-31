@@ -188,7 +188,7 @@ const SavingTips: React.FC = () => {
                     <h3 className="mb-2 text-xl font-semibold text-gray-800">{tip.title}</h3>
                     <p className="text-gray-600">{tip.description}</p>
                     <button className="mt-4 transition-colors text-primary hover:text-primary-accent">
-                      {tip.link ? 'Ver enlace' : 'Leer más'}
+                      {tip.link ? 'Leer más' : 'Leer más'}
                     </button>
                   </motion.div>
                 ))}

@@ -75,6 +75,10 @@ export const footerData: FooterData = {
                     to: commitmentPdf, 
                     isExternalLink: true, 
                 },
+                {
+                    text: "Política de Privacidad",
+                    to: "/politica-de-privacidad"
+                },
             ]
         },
         services: {
