@@ -21,7 +21,7 @@ const CommunityDetail = lazy(() => import('@/pages/about/CommunityDetail'));
 const Memories = lazy(() => import('@/pages/about/Memories'));
 const FinancialStatements = lazy(() => import('@/pages/about/FinancialStatements'));
 const Policies = lazy(() => import('@/pages/about/Policies'));
-
+const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
 // Services
 const Services = lazy(() => import('@/pages/services'));
 
@@ -118,6 +118,7 @@ export const AppRouter: React.FC = () => {
                         <Route path="/nosotros/recuerdos" element={<Memories />} />
                         <Route path="/nosotros/estados-financieros" element={<FinancialStatements />} />
                         <Route path="/nosotros/politicas" element={<Policies />} />
+                        <Route path="/politica-de-privacidad" element={<PrivacyPolicy />} />
 
                         {/* Productos - Cuentas */}
                         <Route path="/productos/cuenta/:slug" element={<AccountDetail />} />

@@ -60,7 +60,7 @@ export const Slider: React.FC<ICarousel& { height?: string }> = ({
       if (!fullScreen) heightClass = 'h-[576px]';
     } else {
       aspectRatio = 'aspect-[21/9]';
-      if (!fullScreen) heightClass = 'h-[500px]'; // <--- Antes siempre entraba aquí
+      if (!fullScreen) heightClass = 'h-[500px]'; 
     }
 
     setDimensions({ heightClass, aspectRatio });
