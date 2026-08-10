@@ -112,13 +112,13 @@ export const footerData: FooterData = {
                 { 
                     icon: FaWhatsapp, 
                     text: "Chatear Por WhatsApp",
-                    to: "https://wa.me/8095782321",
+                    to: "https://wa.me/8297604894",
                     isExternalLink: true
                 },
                 { 
                     icon: MdEmail, 
-                    text: "Onicanal@asomap.com.do",
-                    to: "mailto:Onicanal@asomap.com.do",
+                    text: "omnicanal@asomap.com.do",
+                    to: "mailto:omnicanal@asomap.com.do",
                     isExternalLink: true
                 }
             ]
