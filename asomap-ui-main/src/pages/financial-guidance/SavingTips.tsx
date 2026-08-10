@@ -244,23 +244,31 @@ const SavingTips: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* Iconos representativos */}
+       {/* Iconos representativos */}
         <div className="py-24 bg-white">
           <div className="px-4 mx-auto text-center max-w-7xl sm:px-6 lg:px-8">
-            <h2 className="mb-8 text-3xl font-bold text-primary">Consejos Clave</h2>
-            <div className="flex justify-center space-x-8">
-              <div className="flex flex-col items-center">
-                <FaPiggyBank className="mb-2 text-6xl text-primary hover:text-primary-accent" />
+            <h2 className="mb-12 text-3xl font-bold text-primary">Consejos Clave</h2>
+            
+            {/* Usamos un grid de 3 columnas para garantizar el mismo espaciado y centrado */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+              
+              <div className="flex flex-col items-center justify-start">
+                <FaPiggyBank className="mb-4 text-6xl text-primary hover:text-primary-accent transition-transform hover:scale-110 duration-300" />
                 <span className="font-semibold text-gray-700">Ahorra Más</span>
               </div>
-              <div className="flex flex-col items-center">
-                <FaMoneyBillWave className="mb-2 text-6xl text-primary hover:text-primary-accent" />
+              
+              <div className="flex flex-col items-center justify-start">
+                <FaMoneyBillWave className="mb-4 text-6xl text-primary hover:text-primary-accent transition-transform hover:scale-110 duration-300" />
                 <span className="font-semibold text-gray-700">Gasta Sabiamente</span>
               </div>
-              <div className="flex flex-col items-center">
-                <FaWallet className="mb-2 text-6xl text-primary hover:text-primary-accent" />
-                <span className="font-semibold text-gray-700">Invierte Inteligentemente</span>
+              
+              <div className="flex flex-col items-center justify-start">
+                <FaWallet className="mb-4 text-6xl text-primary hover:text-primary-accent transition-transform hover:scale-110 duration-300" />
+                <span className="font-semibold text-gray-700 leading-tight">
+                  Invierte <br /> Inteligentemente
+                </span>
               </div>
+              
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui';
 import { normalizeMediaUrl } from '@/utils/media';
+import { Link } from 'react-router-dom';
 
 interface IDebitCardPromoProps {
   data: {
@@ -41,17 +42,23 @@ const DebitCardPromo: React.FC<IDebitCardPromoProps> = ({ data }) => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href={data.primary_button_url} target="_self" rel="noreferrer">
+              {/* <a href={data.primary_button_url} target="_self" rel="noreferrer">
                 <Button className="w-full sm:w-auto px-6 py-3 text-white bg-primary hover:bg-primary-accent transition-all duration-300">
                   {data.primary_button_text}
                 </Button>
-              </a>
+              </a> */}
 
-              <a href={data.secondary_button_url} target="_self" rel="noreferrer">
+              {/* <a href={data.secondary_button_url} target="_self" rel="noreferrer">
                 <Button className="w-full sm:w-auto px-6 py-3 border border-primary text-primary bg-white hover:bg-primary/5 transition-all duration-300">
                   {data.secondary_button_text}
                 </Button>
-              </a>
+              </a> */}
+
+              <Link to="/productos/tarjeta/tarjeta-de-debito">
+                <Button className="w-full sm:w-auto px-6 py-3 border border-primary text-primary bg-white hover:bg-primary/5 transition-all duration-300">
+                  {data.secondary_button_text}
+                </Button>
+              </Link>
             </div>
           </motion.div>
 
