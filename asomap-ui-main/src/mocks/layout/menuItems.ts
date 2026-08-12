@@ -163,11 +163,11 @@ const userSupportItems: MainNavItem[] = [
         icon: FiFileText,
         to: "/prousuario/solicitud-reclamacion"
     },
-    {
-        text: "Tarifario",
-        icon: FiDollarSign,
-        to: "/prousuario/tarifario-productos-servicios"
-    },
+    // {
+    //     text: "Tarifario",
+    //     icon: FiDollarSign,
+    //     to: "/prousuario/tarifario-productos-servicios"
+    // },
     {
         text: "Cuentas abandonadas e Inactivas",
         icon: FiArchive,
