@@ -58,10 +58,10 @@ export const footerData: FooterData = {
                     text: "Quiénes Somos",
                     to: "/nosotros/quienes-somos#quienes-somos"
                 },
-                {
-                    text: "Tarifario de Servicios",
-                    to: "/prousuario/tarifario-productos-servicios"
-                },
+                // {
+                //     text: "Tarifario de Servicios",
+                //     to: "/prousuario/tarifario-productos-servicios"
+                // },
                 {
                     text: "Consejo de Directores",
                     to: "/nosotros/quienes-somos#consejo-directores"
