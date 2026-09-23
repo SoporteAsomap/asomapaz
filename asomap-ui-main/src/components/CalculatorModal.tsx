@@ -15,7 +15,7 @@ interface MortgageFormState {
     homePrice: number;
     amount: number;
     rate: number;
-    termYears: string;
+    termMonths: string;
     age: string;
     sex: string;
     propertyType: string;
@@ -25,13 +25,13 @@ interface MortgageFormState {
 interface CommercialFormState {
     amount: number;
     rate: number;
-    termYears: string;
+    termMonths: string;
 }
 
 interface ConsumerFormState {
     amount: number;
     rate: number;
-    termYears: string;
+    termMonths: string;
 }
 
 interface DepositFormState {
@@ -45,7 +45,7 @@ interface VehicleFormState {
     year: string;
     amount: number;
     rate: number;
-    termYears: string;
+    termMonths: string;
 }
 
 interface AmortizationRow {
@@ -99,7 +99,7 @@ const INITIAL_MORTGAGE_FORM: MortgageFormState = {
     homePrice: 0,
     amount: 0,
     rate: 0,
-    termYears: '',
+    termMonths: '',
     age: '',
     sex: '',
     propertyType: '',
@@ -109,13 +109,13 @@ const INITIAL_MORTGAGE_FORM: MortgageFormState = {
 const INITIAL_COMMERCIAL_FORM: CommercialFormState = {
     amount: 0,
     rate: 0,
-    termYears: '',
+    termMonths: '',
 };
 
 const INITIAL_CONSUMER_FORM: ConsumerFormState = {
     amount: 0,
     rate: 0,
-    termYears: '',
+    termMonths: '',
 };
 
 const INITIAL_DEPOSIT_FORM: DepositFormState = {
@@ -129,7 +129,7 @@ const INITIAL_VEHICLE_FORM: VehicleFormState = {
     year: '',
     amount: 0,
     rate: 0,
-    termYears: '',
+    termMonths: '',
 };
 
 const calculatorTabs: Array<{ id: CalculatorType; label: string }> = [
@@ -140,8 +140,9 @@ const calculatorTabs: Array<{ id: CalculatorType; label: string }> = [
     { id: 'deposit', label: 'Depósito a Plazo' },
 ];
 
-const mortgageTerms = Array.from({ length: 20 }, (_, index) => index + 1);
-const commercialTerms = Array.from({ length: 10 }, (_, index) => index + 1);
+// Plazos de 6 en 6 meses
+const mortgageTermsMonths = Array.from({ length: 40 }, (_, index) => (index + 1) * 6); // Hasta 240 meses
+const otherLoansTermsMonths = Array.from({ length: 10 }, (_, index) => (index + 1) * 6); // Hasta 60 meses
 const depositTerms = [
     ...Array.from({ length: 11 }, (_, index) => index + 1),
     ...Array.from({ length: 5 }, (_, index) => (index + 1) * 12),
@@ -309,16 +310,36 @@ const SelectField: React.FC<{
     </div>
 );
 
+// Actualizado para manejar el tamaño de texto de forma más inteligente y permitir un estilo destacado (hero)
 const ResultCard: React.FC<{
     label: string;
     value: string;
     emphasized?: boolean;
-}> = ({ label, value, emphasized = false }) => (
-    <div className={`rounded-2xl border px-5 py-4 shadow-sm ${emphasized ? 'border-primary bg-gradient-to-br from-primary to-primary-dark text-white' : 'border-secondary-light bg-white text-neutral-100'}`}>
-        <p className={`text-sm ${emphasized ? 'text-white/80' : 'text-neutral-300'}`}>{label}</p>
-        <p className="mt-2 text-2xl font-bold">{value}</p>
-    </div>
-);
+    hero?: boolean; // Nueva prop para destacar el valor principal
+}> = ({ label, value, emphasized = false, hero = false }) => {
+    // Si el valor es muy largo, reducimos un poco el tamaño de fuente, pero permitimos salto de línea
+    const isLongValue = value.length > 18;
+    
+    if (hero) {
+        return (
+            <div className="col-span-full rounded-3xl border-2 border-primary bg-gradient-to-br from-primary to-primary-dark p-8 shadow-xl text-center">
+                <p className="text-white/80 font-medium tracking-wide uppercase text-sm mb-2">{label}</p>
+                <p className={`font-extrabold text-white break-words leading-tight ${isLongValue ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'}`}>
+                    {value}
+                </p>
+            </div>
+        );
+    }
+
+    return (
+        <div className={`rounded-2xl border px-5 py-4 shadow-sm flex flex-col justify-center min-w-0 ${emphasized ? 'border-primary bg-gradient-to-br from-primary to-primary-dark text-white' : 'border-secondary-light bg-slate-50 text-neutral-100'}`}>
+            <p className={`text-sm mb-1 font-medium ${emphasized ? 'text-white/80' : 'text-slate-500'}`}>{label}</p>
+            <p className={`font-bold leading-tight break-words ${isLongValue ? 'text-lg' : 'text-xl'}`}>
+                {value}
+            </p>
+        </div>
+    );
+};
 
 const ProductNotice: React.FC<{ text: string }> = ({ text }) => (
     <div className="mt-6 rounded-3xl border border-primary/10 bg-white px-5 py-4 shadow-sm">
@@ -405,21 +426,27 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
     const vehicleTermOptions = useMemo(() => {
         const currentYear = new Date().getFullYear();
         const year = parseInt(vehicleForm.year, 10);
+        
+        let maxMonths = 60; // Max default is 5 years (60 months)
 
-        if (!year) {
-            return [];
+        if (year) {
+            const age = currentYear - year;
+            let maxYears = 12 - age;
+            if (maxYears > 5) {
+                maxYears = 5;
+            }
+            if (maxYears < 1) {
+                maxYears = 1;
+            }
+            maxMonths = maxYears * 12;
         }
 
-        const age = currentYear - year;
-        let maxTerm = 12 - age;
-        if (maxTerm > 5) {
-            maxTerm = 5;
-        }
-        if (maxTerm < 1) {
-            maxTerm = 1;
+        const options = [];
+        for (let i = 6; i <= maxMonths; i += 6) {
+            options.push(i);
         }
 
-        return Array.from({ length: maxTerm }, (_, index) => index + 1);
+        return options;
     }, [vehicleForm.year]);
 
     const resetError = () => setErrorMessage('');
@@ -431,7 +458,7 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
         const homePrice = mortgageForm.homePrice;
         const amount = mortgageForm.amount;
         const rate = mortgageForm.rate;
-        const termYears = parseInt(mortgageForm.termYears, 10);
+        const termMonths = parseInt(mortgageForm.termMonths, 10);
         const age = parseInt(mortgageForm.age, 10);
         const sex = mortgageForm.sex;
         const propertyType = mortgageForm.propertyType;
@@ -457,8 +484,8 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             return;
         }
 
-        if (Number.isNaN(termYears) || termYears < 1 || termYears > 20) {
-            setErrorMessage('Seleccione un plazo entre 1 y 20 años');
+        if (Number.isNaN(termMonths) || termMonths < 6 || termMonths > 240) {
+            setErrorMessage('Seleccione un plazo válido (hasta 240 meses)');
             return;
         }
 
@@ -482,8 +509,8 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             return;
         }
 
-        if (age + termYears > 75) {
-            setErrorMessage(`El cliente tiene ${age} años y con un plazo de ${termYears} años alcanzaría ${age + termYears} años. La edad máxima permitida al finalizar el préstamo es 75 años.`);
+        if (age + (termMonths / 12) > 75) {
+            setErrorMessage(`El cliente tiene ${age} años y con un plazo de ${termMonths} meses alcanzaría ${Math.floor(age + termMonths / 12)} años. La edad máxima permitida al finalizar el préstamo es 75 años.`);
             return;
         }
 
@@ -497,7 +524,7 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             return;
         }
 
-        const months = termYears * 12;
+        const months = termMonths;
         const insuranceRate = borrowerCount === 2 ? 0.8 : 0.5;
         let lifeInsurance = 0;
         let fireInsurance = 0;
@@ -528,7 +555,7 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
 
         const amount = commercialForm.amount;
         const rate = commercialForm.rate;
-        const termYears = parseInt(commercialForm.termYears, 10);
+        const termMonths = parseInt(commercialForm.termMonths, 10);
 
         if (Number.isNaN(amount) || amount <= 0) {
             setErrorMessage('Ingrese un monto válido');
@@ -540,12 +567,12 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             return;
         }
 
-        if (Number.isNaN(termYears) || termYears < 1 || termYears > 10) {
-            setErrorMessage('Ingrese un plazo válido (1-10 años)');
+        if (Number.isNaN(termMonths) || termMonths < 6 || termMonths > 60) {
+            setErrorMessage('Ingrese un plazo válido (hasta 60 meses)');
             return;
         }
 
-        const months = termYears * 12;
+        const months = termMonths;
         const lifeInsurance = (amount * 0.6 / 1000) * 1.16;
         const amortization = buildAmortizationRows(amount, rate, months, lifeInsurance);
 
@@ -563,7 +590,7 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
 
         const amount = consumerForm.amount;
         const rate = consumerForm.rate;
-        const termYears = parseInt(consumerForm.termYears, 10);
+        const termMonths = parseInt(consumerForm.termMonths, 10);
 
         if (Number.isNaN(amount) || amount <= 0) {
             setErrorMessage('Ingrese un monto válido');
@@ -575,12 +602,12 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             return;
         }
 
-        if (Number.isNaN(termYears)) {
-            setErrorMessage('Seleccione un plazo');
+        if (Number.isNaN(termMonths) || termMonths < 6 || termMonths > 60) {
+            setErrorMessage('Seleccione un plazo válido (hasta 60 meses)');
             return;
         }
 
-        const months = termYears * 12;
+        const months = termMonths;
         const basePayment = calculateAmortizedPayment(amount, rate, months);
         const lifeInsurance = (amount * 0.5 / 1000) * 1.16;
         const totalInstallment = basePayment + lifeInsurance;
@@ -641,7 +668,7 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
         const year = parseInt(vehicleForm.year, 10);
         const amount = vehicleForm.amount;
         const rate = vehicleForm.rate;
-        const termYears = parseInt(vehicleForm.termYears, 10);
+        const termMonths = parseInt(vehicleForm.termMonths, 10);
 
         if (!type) {
             setErrorMessage('Seleccione la condición del vehículo');
@@ -653,7 +680,7 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             return;
         }
 
-        if (Number.isNaN(termYears)) {
+        if (Number.isNaN(termMonths)) {
             setErrorMessage('Seleccione el plazo del préstamo');
             return;
         }
@@ -681,7 +708,7 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             return;
         }
 
-        const months = termYears * 12;
+        const months = termMonths;
         const payment = calculateAmortizedPayment(amount, rate, months);
         const totalToPay = payment * months;
         const totalInterest = totalToPay - amount;
@@ -735,11 +762,11 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
                 />
 
                 <SelectField
-                    id="termYears"
-                    label="Plazo (años)"
-                    value={mortgageForm.termYears}
-                    onChange={(value) => setMortgageForm((current) => ({ ...current, termYears: value }))}
-                    options={mortgageTerms.map((term) => ({ value: String(term), label: `${term} año${term > 1 ? 's' : ''}` }))}
+                    id="termMonths"
+                    label="Plazo (meses)"
+                    value={mortgageForm.termMonths}
+                    onChange={(value) => setMortgageForm((current) => ({ ...current, termMonths: value }))}
+                    options={mortgageTermsMonths.map((term) => ({ value: String(term), label: String(term) }))}
                     placeholder="Seleccione plazo"
                 />
 
@@ -795,15 +822,23 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             </button>
 
             {mortgageResult && (
-                <>
-                    <div className="mt-6 rounded-3xl bg-white p-6 shadow-sm">
-                        <h4 className="text-2xl font-bold text-slate-900">Cálculos</h4>
-                        <div className="mt-6 grid gap-4 md:grid-cols-5">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
+                    <div className="rounded-3xl bg-white p-6 shadow-sm border border-secondary-light">
+                        <h4 className="text-2xl font-bold text-slate-900 mb-6">Resumen del Préstamo</h4>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {/* Tarjeta Hero para la Cuota */}
+                            <ResultCard 
+                                label="Cuota Mensual Estimada" 
+                                value={formatCurrency(mortgageResult.totalInstallment)} 
+                                hero 
+                            />
+                            
+                            {/* Tarjetas de Desglose */}
                             <ResultCard label="Capital + Interés" value={formatCurrency(mortgageResult.capitalInterest)} />
                             <ResultCard label="Interés Total" value={formatCurrency(mortgageResult.totalInterest)} />
                             <ResultCard label="Seguro de Vida" value={formatCurrency(mortgageResult.lifeInsurance)} />
                             <ResultCard label="Seguro de Incendio" value={formatCurrency(mortgageResult.fireInsurance)} />
-                            <ResultCard label="Cuota Total" value={formatCurrency(mortgageResult.totalInstallment)} emphasized />
                         </div>
                     </div>
 
@@ -812,10 +847,10 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
                     </div>
 
                     <AmortizationTable rows={mortgageResult.rows} />
-                </>
+                </motion.div>
             )}
 
-            <ProductNotice text="Estos cálculos son aproximados. Para obtener el monto exacto de la cuota del préstamo, por favor visita la sucursal de tu preferencia." />
+            {!mortgageResult && <ProductNotice text="Estos cálculos son aproximados. Para obtener el monto exacto de la cuota del préstamo, por favor visita la sucursal de tu preferencia." />}
         </>
     );
 
@@ -840,10 +875,10 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
 
                 <SelectField
                     id="commercialTerm"
-                    label="Plazo (años)"
-                    value={commercialForm.termYears}
-                    onChange={(value) => setCommercialForm((current) => ({ ...current, termYears: value }))}
-                    options={commercialTerms.map((term) => ({ value: String(term), label: `${term} año${term > 1 ? 's' : ''}` }))}
+                    label="Plazo (meses)"
+                    value={commercialForm.termMonths}
+                    onChange={(value) => setCommercialForm((current) => ({ ...current, termMonths: value }))}
+                    options={otherLoansTermsMonths.map((term) => ({ value: String(term), label: String(term) }))}
                     placeholder="Seleccione plazo"
                 />
             </div>
@@ -857,22 +892,30 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             </button>
 
             {commercialResult && (
-                <>
-                    <div className="mt-6 rounded-3xl bg-white p-6 shadow-sm">
-                        <h4 className="text-2xl font-bold text-slate-900">Cálculos</h4>
-                        <div className="mt-6 grid gap-4 md:grid-cols-4">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
+                    <div className="rounded-3xl bg-white p-6 shadow-sm border border-secondary-light">
+                        <h4 className="text-2xl font-bold text-slate-900 mb-6">Resumen del Préstamo</h4>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {/* Tarjeta Hero para la Cuota */}
+                            <ResultCard 
+                                label="Cuota Mensual Estimada" 
+                                value={formatCurrency(commercialResult.totalInstallment)} 
+                                hero 
+                            />
+                            
+                            {/* Tarjetas de Desglose */}
                             <ResultCard label="Capital + Interés" value={formatCurrency(commercialResult.capitalInterest)} />
                             <ResultCard label="Interés Total" value={formatCurrency(commercialResult.totalInterest)} />
                             <ResultCard label="Seguro" value={formatCurrency(commercialResult.lifeInsurance)} />
-                            <ResultCard label="Cuota Mensual" value={formatCurrency(commercialResult.totalInstallment)} emphasized />
                         </div>
                     </div>
 
                     <AmortizationTable rows={commercialResult.rows} />
-                </>
+                </motion.div>
             )}
 
-            <ProductNotice text="Estos cálculos son aproximados. Para obtener el monto exacto de la cuota del préstamo, por favor visita la sucursal de tu preferencia." />
+            {!commercialResult && <ProductNotice text="Estos cálculos son aproximados. Para obtener el monto exacto de la cuota del préstamo, por favor visita la sucursal de tu preferencia." />}
         </>
     );
 
@@ -897,10 +940,10 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
 
                 <SelectField
                     id="consumerTerm"
-                    label="Plazo (años)"
-                    value={consumerForm.termYears}
-                    onChange={(value) => setConsumerForm((current) => ({ ...current, termYears: value }))}
-                    options={mortgageTerms.map((term) => ({ value: String(term), label: `${term} año${term > 1 ? 's' : ''}` }))}
+                    label="Plazo (meses)"
+                    value={consumerForm.termMonths}
+                    onChange={(value) => setConsumerForm((current) => ({ ...current, termMonths: value }))}
+                    options={otherLoansTermsMonths.map((term) => ({ value: String(term), label: String(term) }))}
                     placeholder="Seleccione plazo"
                 />
             </div>
@@ -914,18 +957,28 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             </button>
 
             {consumerResult && (
-                <div className="mt-6 rounded-3xl bg-white p-6 shadow-sm">
-                    <h4 className="text-2xl font-bold text-slate-900">Cálculos</h4>
-                    <div className="mt-6 grid gap-4 md:grid-cols-4">
-                        <ResultCard label="Capital + Interés" value={formatCurrency(consumerResult.totalToPay)} />
-                        <ResultCard label="Interés Total" value={formatCurrency(consumerResult.totalInterest)} />
-                        <ResultCard label="Seguro" value={formatCurrency(consumerResult.lifeInsurance)} />
-                        <ResultCard label="Cuota Mensual" value={formatCurrency(consumerResult.totalInstallment)} emphasized />
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
+                    <div className="rounded-3xl bg-white p-6 shadow-sm border border-secondary-light">
+                        <h4 className="text-2xl font-bold text-slate-900 mb-6">Resumen del Préstamo</h4>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {/* Tarjeta Hero para la Cuota */}
+                            <ResultCard 
+                                label="Cuota Mensual Estimada" 
+                                value={formatCurrency(consumerResult.totalInstallment)} 
+                                hero 
+                            />
+                            
+                            {/* Tarjetas de Desglose */}
+                            <ResultCard label="Total a Pagar" value={formatCurrency(consumerResult.totalToPay)} />
+                            <ResultCard label="Interés Total" value={formatCurrency(consumerResult.totalInterest)} />
+                            <ResultCard label="Seguro" value={formatCurrency(consumerResult.lifeInsurance)} />
+                        </div>
                     </div>
-                </div>
+                </motion.div>
             )}
 
-            <ProductNotice text="Estos cálculos son aproximados. Para obtener el monto exacto de la cuota del préstamo, por favor visita la sucursal de tu preferencia." />
+            {!consumerResult && <ProductNotice text="Estos cálculos son aproximados. Para obtener el monto exacto de la cuota del préstamo, por favor visita la sucursal de tu preferencia." />}
         </>
     );
 
@@ -950,12 +1003,12 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
 
                 <SelectField
                     id="depositTerm"
-                    label="Plazo"
+                    label="Plazo (meses)"
                     value={depositForm.termMonths}
                     onChange={(value) => setDepositForm((current) => ({ ...current, termMonths: value }))}
                     options={depositTerms.map((term) => ({
                         value: String(term),
-                        label: term < 12 ? `${term} mes${term > 1 ? 'es' : ''}` : `${term / 12} año${term > 12 ? 's' : ''}`,
+                        label: String(term),
                     }))}
                     placeholder="Seleccione plazo"
                 />
@@ -980,17 +1033,27 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             </div>
 
             {depositResult && (
-                <div className="mt-6 rounded-3xl bg-white p-6 shadow-sm">
-                    <h4 className="text-2xl font-bold text-slate-900">Resultado de Inversión</h4>
-                    <div className="mt-6 grid gap-4 md:grid-cols-3">
-                        <ResultCard label="Capital Inicial" value={formatCurrency(depositResult.initialCapital)} />
-                        <ResultCard label="Interés Generado" value={formatCurrency(depositResult.generatedInterest)} />
-                        <ResultCard label="Total Acumulado" value={formatCurrency(depositResult.finalAmount)} emphasized />
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
+                    <div className="rounded-3xl bg-white p-6 shadow-sm border border-secondary-light">
+                        <h4 className="text-2xl font-bold text-slate-900 mb-6">Resultado de Inversión</h4>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Tarjeta Hero para el Total */}
+                            <ResultCard 
+                                label="Total Acumulado" 
+                                value={formatCurrency(depositResult.finalAmount)} 
+                                hero 
+                            />
+                            
+                            {/* Tarjetas de Desglose */}
+                            <ResultCard label="Capital Inicial" value={formatCurrency(depositResult.initialCapital)} />
+                            <ResultCard label="Interés Generado" value={formatCurrency(depositResult.generatedInterest)} />
+                        </div>
                     </div>
-                </div>
+                </motion.div>
             )}
 
-            <ProductNotice text="Estos cálculos son aproximados. Para obtener el monto exacto por favor visita la sucursal de tu preferencia." />
+            {!depositResult && <ProductNotice text="Estos cálculos son aproximados. Para obtener el monto exacto por favor visita la sucursal de tu preferencia." />}
         </>
     );
 
@@ -1001,7 +1064,7 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
                     id="vehicleType"
                     label="Condición del vehículo"
                     value={vehicleForm.type}
-                    onChange={(value) => setVehicleForm((current) => ({ ...current, type: value, year: '', termYears: '' }))}
+                    onChange={(value) => setVehicleForm((current) => ({ ...current, type: value, year: '', termMonths: '' }))}
                     options={[
                         { value: 'nuevo', label: 'Nuevo' },
                         { value: 'usado', label: 'Usado' },
@@ -1010,10 +1073,11 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
 
                 <NumberField
                     id="vehicleYear"
-                    label="Fecha del Vehículo"
+                    label="Año del Vehículo"
                     value={vehicleForm.year}
-                    onChange={(value) => setVehicleForm((current) => ({ ...current, year: value, termYears: '' }))}
-                    min={0}
+                    onChange={(value) => setVehicleForm((current) => ({ ...current, year: value, termMonths: '' }))}
+                    min={1990}
+                    max={new Date().getFullYear() + 1}
                 />
 
                 <CurrencyField
@@ -1034,10 +1098,10 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
 
                 <SelectField
                     id="vehicleTerm"
-                    label="Plazo (años)"
-                    value={vehicleForm.termYears}
-                    onChange={(value) => setVehicleForm((current) => ({ ...current, termYears: value }))}
-                    options={vehicleTermOptions.map((term) => ({ value: String(term), label: `${term} año${term > 1 ? 's' : ''}` }))}
+                    label="Plazo (meses)"
+                    value={vehicleForm.termMonths}
+                    onChange={(value) => setVehicleForm((current) => ({ ...current, termMonths: value }))}
+                    options={vehicleTermOptions.map((term) => ({ value: String(term), label: String(term) }))}
                     placeholder="Seleccione plazo"
                 />
             </div>
@@ -1051,17 +1115,27 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             </button>
 
             {vehicleResult && (
-                <div className="mt-6 rounded-3xl bg-white p-6 shadow-sm">
-                    <h4 className="text-2xl font-bold text-slate-900">Resultado del Préstamo</h4>
-                    <div className="mt-6 grid gap-4 md:grid-cols-3">
-                        <ResultCard label="Cuota Mensual" value={formatCurrency(vehicleResult.totalInstallment)} />
-                        <ResultCard label="Interés Total" value={formatCurrency(vehicleResult.totalInterest)} />
-                        <ResultCard label="Total a Pagar" value={formatCurrency(vehicleResult.totalToPay)} emphasized />
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
+                    <div className="rounded-3xl bg-white p-6 shadow-sm border border-secondary-light">
+                        <h4 className="text-2xl font-bold text-slate-900 mb-6">Resumen del Préstamo</h4>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Tarjeta Hero para la Cuota */}
+                            <ResultCard 
+                                label="Cuota Mensual Estimada" 
+                                value={formatCurrency(vehicleResult.totalInstallment)} 
+                                hero 
+                            />
+                            
+                            {/* Tarjetas de Desglose */}
+                            <ResultCard label="Interés Total" value={formatCurrency(vehicleResult.totalInterest)} />
+                            <ResultCard label="Total a Pagar" value={formatCurrency(vehicleResult.totalToPay)} />
+                        </div>
                     </div>
-                </div>
+                </motion.div>
             )}
 
-            <ProductNotice text="Estos cálculos son aproximados. Para obtener el monto exacto de la cuota del préstamo por favor visita la sucursal de tu preferencia." />
+            {!vehicleResult && <ProductNotice text="Estos cálculos son aproximados. Para obtener el monto exacto de la cuota del préstamo por favor visita la sucursal de tu preferencia." />}
         </>
     );
 
@@ -1093,7 +1167,7 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
                     onClick={closeModal}
                 >
                     <motion.div
-                        className="w-full max-w-6xl overflow-hidden rounded-3xl bg-white shadow-2xl"
+                        className="w-full max-w-7xl overflow-hidden rounded-3xl bg-white shadow-2xl"
                         initial={{ y: 24, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: 16, opacity: 0 }}
