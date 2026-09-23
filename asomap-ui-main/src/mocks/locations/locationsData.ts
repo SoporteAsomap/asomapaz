@@ -285,6 +285,24 @@ export const locations: Location[] = [
         scheduleText: getScheduleText('branch', { openingTime: '8:30 AM', closingTime: '5 PM' }).scheduleText,
         availabilityClass: getScheduleText('branch', { openingTime: '8:30 AM', closingTime: '5 PM' }).availabilityClass,
     },
+     {
+        id: '14',
+        type: 'branch',
+        name: 'Punta Cana',
+        address: 'Plaza Coral Town 2 módulo 114 Boulevard Turístico del Este, Bávaro Punta Cana.',
+        phone: '(809)-893-4727',
+        hours: {
+            openingTime: '9:00 AM',
+            closingTime: '6 PM',
+        },
+        coordinates: { lat: 18.6352926, lng: -68.4089515 },
+        isOpen: false,
+        services: [
+            'Todos los Servicios'
+        ],
+        scheduleText: getScheduleText('branch', { openingTime: '9:00 AM', closingTime: '6 PM' }).scheduleText,
+        availabilityClass: getScheduleText('branch', { openingTime: '9:00 AM', closingTime: '6 PM' }).availabilityClass,
+    },
     {
         id: '6',
         type: 'atm',
@@ -345,6 +363,18 @@ export const locations: Location[] = [
         coordinates: { lat: 19.3894, lng: -70.5204 },
         services: [
             'Depósitos',
+            'Retiros',
+        ],
+        scheduleText: getScheduleText('atm').scheduleText,
+        availabilityClass: getScheduleText('atm').availabilityClass,
+    },
+    {
+        id: '11',
+        type: 'atm',
+        name: 'Cajero ASOMAP Punta Cana',
+        address: 'Plaza Coral Town 2 módulo 114 Boulevard Turístico del Este, Bávaro Punta Cana.',
+        coordinates: { lat: 18.6352926, lng: -68.4089515 },
+        services: [
             'Retiros',
         ],
         scheduleText: getScheduleText('atm').scheduleText,
