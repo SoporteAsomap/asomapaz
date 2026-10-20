@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FaTimes } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
 
 type CalculatorType = 'mortgage' | 'commercial' | 'consumer' | 'deposit' | 'vehicle';
 
@@ -343,38 +342,38 @@ const ProductNotice: React.FC<{ text: string }> = ({ text }) => (
     </div>
 );
 
-const AmortizationTable: React.FC<{ rows: AmortizationRow[] }> = ({ rows }) => (
-    <div className="mt-6 overflow-hidden rounded-3xl border border-secondary-light bg-white shadow-sm">
-        <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-                <thead className="bg-gradient-to-r from-primary/10 to-secondary/20 text-left text-primary">
-                    <tr>
-                        <th className="px-4 py-3 font-semibold">#</th>
-                        <th className="px-4 py-3 font-semibold">Fecha</th>
-                        <th className="px-4 py-3 font-semibold">Capital</th>
-                        <th className="px-4 py-3 font-semibold">Interés</th>
-                        <th className="px-4 py-3 font-semibold">Seguros</th>
-                        <th className="px-4 py-3 font-semibold">Cuota</th>
-                        <th className="px-4 py-3 font-semibold">Saldo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows.map((row) => (
-                        <tr key={`${row.installment}-${row.date}`} className="border-t border-secondary-light/70">
-                            <td className="px-4 py-3">{row.installment}</td>
-                            <td className="px-4 py-3">{row.date}</td>
-                            <td className="px-4 py-3">{formatCurrency(row.capital)}</td>
-                            <td className="px-4 py-3">{formatCurrency(row.interest)}</td>
-                            <td className="px-4 py-3">{formatCurrency(row.insurance)}</td>
-                            <td className="px-4 py-3">{formatCurrency(row.payment)}</td>
-                            <td className="px-4 py-3">{formatCurrency(row.balance)}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    </div>
-);
+// const AmortizationTable: React.FC<{ rows: AmortizationRow[] }> = ({ rows }) => (
+//     <div className="mt-6 overflow-hidden rounded-3xl border border-secondary-light bg-white shadow-sm">
+//         <div className="overflow-x-auto">
+//             <table className="min-w-full text-sm">
+//                 <thead className="bg-gradient-to-r from-primary/10 to-secondary/20 text-left text-primary">
+//                     <tr>
+//                         <th className="px-4 py-3 font-semibold">#</th>
+//                         <th className="px-4 py-3 font-semibold">Fecha</th>
+//                         <th className="px-4 py-3 font-semibold">Capital</th>
+//                         <th className="px-4 py-3 font-semibold">Interés</th>
+//                         <th className="px-4 py-3 font-semibold">Seguros</th>
+//                         <th className="px-4 py-3 font-semibold">Cuota</th>
+//                         <th className="px-4 py-3 font-semibold">Saldo</th>
+//                     </tr>
+//                 </thead>
+//                 <tbody>
+//                     {rows.map((row) => (
+//                         <tr key={`${row.installment}-${row.date}`} className="border-t border-secondary-light/70">
+//                             <td className="px-4 py-3">{row.installment}</td>
+//                             <td className="px-4 py-3">{row.date}</td>
+//                             <td className="px-4 py-3">{formatCurrency(row.capital)}</td>
+//                             <td className="px-4 py-3">{formatCurrency(row.interest)}</td>
+//                             <td className="px-4 py-3">{formatCurrency(row.insurance)}</td>
+//                             <td className="px-4 py-3">{formatCurrency(row.payment)}</td>
+//                             <td className="px-4 py-3">{formatCurrency(row.balance)}</td>
+//                         </tr>
+//                     ))}
+//                 </tbody>
+//             </table>
+//         </div>
+//     </div>
+// );
 
 const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal }) => {
     const [calculatorType, setCalculatorType] = useState<CalculatorType>('mortgage');
