@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FaTimes } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 type CalculatorType = 'mortgage' | 'commercial' | 'consumer' | 'deposit' | 'vehicle';
 
@@ -333,47 +334,41 @@ const ResultCard: React.FC<{
 const ProductNotice: React.FC<{ text: string }> = ({ text }) => (
     <div className="mt-6 rounded-3xl border border-primary/10 bg-white px-5 py-4 shadow-sm">
         <p className="text-sm leading-6 text-neutral-300">{text}</p>
-        {/* <Link
-            to="/prousuario/tarifario-productos-servicios"
-            className="mt-3 inline-flex text-sm font-semibold text-primary transition-colors hover:text-primary-accent"
-        >
-            Conoce nuestro tarifario de productos y servicios
-        </Link> */}
     </div>
 );
 
-// const AmortizationTable: React.FC<{ rows: AmortizationRow[] }> = ({ rows }) => (
-//     <div className="mt-6 overflow-hidden rounded-3xl border border-secondary-light bg-white shadow-sm">
-//         <div className="overflow-x-auto">
-//             <table className="min-w-full text-sm">
-//                 <thead className="bg-gradient-to-r from-primary/10 to-secondary/20 text-left text-primary">
-//                     <tr>
-//                         <th className="px-4 py-3 font-semibold">#</th>
-//                         <th className="px-4 py-3 font-semibold">Fecha</th>
-//                         <th className="px-4 py-3 font-semibold">Capital</th>
-//                         <th className="px-4 py-3 font-semibold">Interés</th>
-//                         <th className="px-4 py-3 font-semibold">Seguros</th>
-//                         <th className="px-4 py-3 font-semibold">Cuota</th>
-//                         <th className="px-4 py-3 font-semibold">Saldo</th>
-//                     </tr>
-//                 </thead>
-//                 <tbody>
-//                     {rows.map((row) => (
-//                         <tr key={`${row.installment}-${row.date}`} className="border-t border-secondary-light/70">
-//                             <td className="px-4 py-3">{row.installment}</td>
-//                             <td className="px-4 py-3">{row.date}</td>
-//                             <td className="px-4 py-3">{formatCurrency(row.capital)}</td>
-//                             <td className="px-4 py-3">{formatCurrency(row.interest)}</td>
-//                             <td className="px-4 py-3">{formatCurrency(row.insurance)}</td>
-//                             <td className="px-4 py-3">{formatCurrency(row.payment)}</td>
-//                             <td className="px-4 py-3">{formatCurrency(row.balance)}</td>
-//                         </tr>
-//                     ))}
-//                 </tbody>
-//             </table>
-//         </div>
-//     </div>
-// );
+const AmortizationTable: React.FC<{ rows: AmortizationRow[] }> = ({ rows }) => (
+    <div className="mt-6 overflow-hidden rounded-3xl border border-secondary-light bg-white shadow-sm">
+        <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+                <thead className="bg-gradient-to-r from-primary/10 to-secondary/20 text-left text-primary">
+                    <tr>
+                        <th className="px-4 py-3 font-semibold">#</th>
+                        <th className="px-4 py-3 font-semibold">Fecha</th>
+                        <th className="px-4 py-3 font-semibold">Capital</th>
+                        <th className="px-4 py-3 font-semibold">Interés</th>
+                        <th className="px-4 py-3 font-semibold">Seguros</th>
+                        <th className="px-4 py-3 font-semibold">Cuota</th>
+                        <th className="px-4 py-3 font-semibold">Saldo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows.map((row) => (
+                        <tr key={`${row.installment}-${row.date}`} className="border-t border-secondary-light/70">
+                            <td className="px-4 py-3">{row.installment}</td>
+                            <td className="px-4 py-3">{row.date}</td>
+                            <td className="px-4 py-3">{formatCurrency(row.capital)}</td>
+                            <td className="px-4 py-3">{formatCurrency(row.interest)}</td>
+                            <td className="px-4 py-3">{formatCurrency(row.insurance)}</td>
+                            <td className="px-4 py-3">{formatCurrency(row.payment)}</td>
+                            <td className="px-4 py-3">{formatCurrency(row.balance)}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    </div>
+);
 
 const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal }) => {
     const [calculatorType, setCalculatorType] = useState<CalculatorType>('mortgage');
@@ -451,7 +446,6 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
         
         // Variables internas forzadas para el cálculo hipotecario
         const propertyType = 'vivienda';
-        const borrowerCount = 1;
 
         if (!destination) {
             setErrorMessage('Seleccione un destino de préstamo');
@@ -479,8 +473,8 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
         }
 
         const months = termMonths;
-        // Calculo basado en borrowerCount = 1 (0.5)
-        const insuranceRate = borrowerCount === 2 ? 0.8 : 0.5;
+        // Calculo basado en 1 deudor
+        const insuranceRate = 0.5;
         let lifeInsurance = 0;
         let fireInsurance = 0;
 
@@ -741,7 +735,6 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
                         <h4 className="text-2xl font-bold text-slate-900 mb-6 text-center">Resumen del Préstamo</h4>
                         
                         <div className="grid grid-cols-1 gap-4">
-                            {/* Tarjeta Hero para la Cuota centrado y más limpio */}
                             <div className="col-span-full">
                                 <ResultCard 
                                     label="Cuota Mensual Estimada" 
