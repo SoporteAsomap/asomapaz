@@ -16,10 +16,6 @@ interface MortgageFormState {
     amount: number;
     rate: number;
     termMonths: string;
-    age: string;
-    sex: string;
-    propertyType: string;
-    borrowerCount: string;
 }
 
 interface CommercialFormState {
@@ -100,10 +96,6 @@ const INITIAL_MORTGAGE_FORM: MortgageFormState = {
     amount: 0,
     rate: 0,
     termMonths: '',
-    age: '',
-    sex: '',
-    propertyType: '',
-    borrowerCount: '',
 };
 
 const INITIAL_COMMERCIAL_FORM: CommercialFormState = {
@@ -310,21 +302,19 @@ const SelectField: React.FC<{
     </div>
 );
 
-// Actualizado para manejar el tamaño de texto de forma más inteligente y permitir un estilo destacado (hero)
 const ResultCard: React.FC<{
     label: string;
     value: string;
     emphasized?: boolean;
-    hero?: boolean; // Nueva prop para destacar el valor principal
+    hero?: boolean;
 }> = ({ label, value, emphasized = false, hero = false }) => {
-    // Si el valor es muy largo, reducimos un poco el tamaño de fuente, pero permitimos salto de línea
     const isLongValue = value.length > 18;
     
     if (hero) {
         return (
-            <div className="col-span-full rounded-3xl border-2 border-primary bg-gradient-to-br from-primary to-primary-dark p-8 shadow-xl text-center">
+            <div className="col-span-full rounded-3xl border-2 border-primary bg-gradient-to-br from-primary to-primary-dark p-8 shadow-xl text-center max-w-xl mx-auto w-full">
                 <p className="text-white/80 font-medium tracking-wide uppercase text-sm mb-2">{label}</p>
-                <p className={`font-extrabold text-white break-words leading-tight ${isLongValue ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'}`}>
+                <p className={`font-extrabold text-white break-words leading-tight ${isLongValue ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'}`}>
                     {value}
                 </p>
             </div>
@@ -344,12 +334,12 @@ const ResultCard: React.FC<{
 const ProductNotice: React.FC<{ text: string }> = ({ text }) => (
     <div className="mt-6 rounded-3xl border border-primary/10 bg-white px-5 py-4 shadow-sm">
         <p className="text-sm leading-6 text-neutral-300">{text}</p>
-        <Link
+        {/* <Link
             to="/prousuario/tarifario-productos-servicios"
             className="mt-3 inline-flex text-sm font-semibold text-primary transition-colors hover:text-primary-accent"
         >
             Conoce nuestro tarifario de productos y servicios
-        </Link>
+        </Link> */}
     </div>
 );
 
@@ -459,10 +449,10 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
         const amount = mortgageForm.amount;
         const rate = mortgageForm.rate;
         const termMonths = parseInt(mortgageForm.termMonths, 10);
-        const age = parseInt(mortgageForm.age, 10);
-        const sex = mortgageForm.sex;
-        const propertyType = mortgageForm.propertyType;
-        const borrowerCount = parseInt(mortgageForm.borrowerCount, 10);
+        
+        // Variables internas forzadas para el cálculo hipotecario
+        const propertyType = 'vivienda';
+        const borrowerCount = 1;
 
         if (!destination) {
             setErrorMessage('Seleccione un destino de préstamo');
@@ -489,46 +479,13 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             return;
         }
 
-        if (!sex) {
-            setErrorMessage('Seleccione el sexo del deudor');
-            return;
-        }
-
-        if (Number.isNaN(age)) {
-            setErrorMessage('Ingrese una edad válida.');
-            return;
-        }
-
-        if (age < 18) {
-            setErrorMessage(`El cliente tiene ${age} años. No cumple con la edad mínima requerida de 18 años para solicitar el préstamo.`);
-            return;
-        }
-
-        if (age > 69) {
-            setErrorMessage(`El cliente tiene ${age} años. La edad máxima permitida para solicitar el préstamo es 69 años.`);
-            return;
-        }
-
-        if (age + (termMonths / 12) > 75) {
-            setErrorMessage(`El cliente tiene ${age} años y con un plazo de ${termMonths} meses alcanzaría ${Math.floor(age + termMonths / 12)} años. La edad máxima permitida al finalizar el préstamo es 75 años.`);
-            return;
-        }
-
-        if (!propertyType) {
-            setErrorMessage('Seleccione tipo de inmueble');
-            return;
-        }
-
-        if (Number.isNaN(borrowerCount) || borrowerCount < 1 || borrowerCount > 2) {
-            setErrorMessage('Seleccione 1 o 2 deudores');
-            return;
-        }
-
         const months = termMonths;
+        // Calculo basado en borrowerCount = 1 (0.5)
         const insuranceRate = borrowerCount === 2 ? 0.8 : 0.5;
         let lifeInsurance = 0;
         let fireInsurance = 0;
 
+        // Validaciones internas simplificadas ya que propertyType es 'vivienda'
         if (propertyType === 'vivienda' || propertyType === 'solar') {
             lifeInsurance = (amount * insuranceRate / 1000) * 1.16;
         }
@@ -769,48 +726,6 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
                     options={mortgageTermsMonths.map((term) => ({ value: String(term), label: String(term) }))}
                     placeholder="Seleccione plazo"
                 />
-
-                <SelectField
-                    id="borrowerCount"
-                    label="Cantidad de deudores"
-                    value={mortgageForm.borrowerCount}
-                    onChange={(value) => setMortgageForm((current) => ({ ...current, borrowerCount: value }))}
-                    options={[
-                        { value: '1', label: '1 deudor' },
-                        { value: '2', label: '2 deudores' },
-                    ]}
-                    placeholder="Seleccione cantidad"
-                />
-
-                <SelectField
-                    id="sex"
-                    label="Sexo del deudor"
-                    value={mortgageForm.sex}
-                    onChange={(value) => setMortgageForm((current) => ({ ...current, sex: value }))}
-                    options={[
-                        { value: 'M', label: 'M' },
-                        { value: 'F', label: 'F' },
-                    ]}
-                />
-
-                <NumberField
-                    id="age"
-                    label="Edad del deudor"
-                    value={mortgageForm.age}
-                    onChange={(value) => setMortgageForm((current) => ({ ...current, age: value }))}
-                    min={18}
-                />
-
-                <SelectField
-                    id="propertyType"
-                    label="Tipo de inmueble"
-                    value={mortgageForm.propertyType}
-                    onChange={(value) => setMortgageForm((current) => ({ ...current, propertyType: value }))}
-                    options={[
-                        { value: 'vivienda', label: 'Vivienda' },
-                        { value: 'solar', label: 'Solar' },
-                    ]}
-                />
             </div>
 
             <button
@@ -824,29 +739,35 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             {mortgageResult && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
                     <div className="rounded-3xl bg-white p-6 shadow-sm border border-secondary-light">
-                        <h4 className="text-2xl font-bold text-slate-900 mb-6">Resumen del Préstamo</h4>
+                        <h4 className="text-2xl font-bold text-slate-900 mb-6 text-center">Resumen del Préstamo</h4>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {/* Tarjeta Hero para la Cuota */}
-                            <ResultCard 
-                                label="Cuota Mensual Estimada" 
-                                value={formatCurrency(mortgageResult.totalInstallment)} 
-                                hero 
-                            />
+                        <div className="grid grid-cols-1 gap-4">
+                            {/* Tarjeta Hero para la Cuota centrado y más limpio */}
+                            <div className="col-span-full">
+                                <ResultCard 
+                                    label="Cuota Mensual Estimada" 
+                                    value={formatCurrency(mortgageResult.totalInstallment)} 
+                                    hero 
+                                />
+                            </div>
                             
-                            {/* Tarjetas de Desglose */}
+                            {/* Desglose comentado a petición
                             <ResultCard label="Capital + Interés" value={formatCurrency(mortgageResult.capitalInterest)} />
                             <ResultCard label="Interés Total" value={formatCurrency(mortgageResult.totalInterest)} />
                             <ResultCard label="Seguro de Vida" value={formatCurrency(mortgageResult.lifeInsurance)} />
                             <ResultCard label="Seguro de Incendio" value={formatCurrency(mortgageResult.fireInsurance)} />
+                            */}
                         </div>
                     </div>
 
+                    {/* Aviso de aproximación y tabla de amortización comentados a petición */}
+                    {/*
                     <div className="mt-6 rounded-3xl border-l-4 border-primary bg-slate-50 px-5 py-4 text-sm text-slate-600">
                         Estos cálculos son aproximados. Para obtener el monto exacto de la cuota del préstamo, por favor visita la sucursal de tu preferencia.
                     </div>
 
                     <AmortizationTable rows={mortgageResult.rows} />
+                    */}
                 </motion.div>
             )}
 
@@ -894,24 +815,28 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             {commercialResult && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
                     <div className="rounded-3xl bg-white p-6 shadow-sm border border-secondary-light">
-                        <h4 className="text-2xl font-bold text-slate-900 mb-6">Resumen del Préstamo</h4>
+                        <h4 className="text-2xl font-bold text-slate-900 mb-6 text-center">Resumen del Préstamo</h4>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {/* Tarjeta Hero para la Cuota */}
-                            <ResultCard 
-                                label="Cuota Mensual Estimada" 
-                                value={formatCurrency(commercialResult.totalInstallment)} 
-                                hero 
-                            />
+                        <div className="grid grid-cols-1 gap-4">
+                            <div className="col-span-full">
+                                <ResultCard 
+                                    label="Cuota Mensual Estimada" 
+                                    value={formatCurrency(commercialResult.totalInstallment)} 
+                                    hero 
+                                />
+                            </div>
                             
-                            {/* Tarjetas de Desglose */}
+                            {/* Desglose comentado a petición 
                             <ResultCard label="Capital + Interés" value={formatCurrency(commercialResult.capitalInterest)} />
                             <ResultCard label="Interés Total" value={formatCurrency(commercialResult.totalInterest)} />
                             <ResultCard label="Seguro" value={formatCurrency(commercialResult.lifeInsurance)} />
+                            */}
                         </div>
                     </div>
 
+                    {/* Tabla comentada a petición 
                     <AmortizationTable rows={commercialResult.rows} />
+                    */}
                 </motion.div>
             )}
 
@@ -959,20 +884,22 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             {consumerResult && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
                     <div className="rounded-3xl bg-white p-6 shadow-sm border border-secondary-light">
-                        <h4 className="text-2xl font-bold text-slate-900 mb-6">Resumen del Préstamo</h4>
+                        <h4 className="text-2xl font-bold text-slate-900 mb-6 text-center">Resumen del Préstamo</h4>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {/* Tarjeta Hero para la Cuota */}
-                            <ResultCard 
-                                label="Cuota Mensual Estimada" 
-                                value={formatCurrency(consumerResult.totalInstallment)} 
-                                hero 
-                            />
+                        <div className="grid grid-cols-1 gap-4">
+                            <div className="col-span-full">
+                                <ResultCard 
+                                    label="Cuota Mensual Estimada" 
+                                    value={formatCurrency(consumerResult.totalInstallment)} 
+                                    hero 
+                                />
+                            </div>
                             
-                            {/* Tarjetas de Desglose */}
+                            {/* Desglose comentado a petición 
                             <ResultCard label="Total a Pagar" value={formatCurrency(consumerResult.totalToPay)} />
                             <ResultCard label="Interés Total" value={formatCurrency(consumerResult.totalInterest)} />
                             <ResultCard label="Seguro" value={formatCurrency(consumerResult.lifeInsurance)} />
+                            */}
                         </div>
                     </div>
                 </motion.div>
@@ -1035,19 +962,21 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             {depositResult && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
                     <div className="rounded-3xl bg-white p-6 shadow-sm border border-secondary-light">
-                        <h4 className="text-2xl font-bold text-slate-900 mb-6">Resultado de Inversión</h4>
+                        <h4 className="text-2xl font-bold text-slate-900 mb-6 text-center">Resultado de Inversión</h4>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Tarjeta Hero para el Total */}
-                            <ResultCard 
-                                label="Total Acumulado" 
-                                value={formatCurrency(depositResult.finalAmount)} 
-                                hero 
-                            />
+                        <div className="grid grid-cols-1 gap-4">
+                            <div className="col-span-full">
+                                <ResultCard 
+                                    label="Total Acumulado" 
+                                    value={formatCurrency(depositResult.finalAmount)} 
+                                    hero 
+                                />
+                            </div>
                             
-                            {/* Tarjetas de Desglose */}
+                            {/* Desglose comentado a petición 
                             <ResultCard label="Capital Inicial" value={formatCurrency(depositResult.initialCapital)} />
                             <ResultCard label="Interés Generado" value={formatCurrency(depositResult.generatedInterest)} />
+                            */}
                         </div>
                     </div>
                 </motion.div>
@@ -1117,19 +1046,21 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ isOpen, closeModal })
             {vehicleResult && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
                     <div className="rounded-3xl bg-white p-6 shadow-sm border border-secondary-light">
-                        <h4 className="text-2xl font-bold text-slate-900 mb-6">Resumen del Préstamo</h4>
+                        <h4 className="text-2xl font-bold text-slate-900 mb-6 text-center">Resumen del Préstamo</h4>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Tarjeta Hero para la Cuota */}
-                            <ResultCard 
-                                label="Cuota Mensual Estimada" 
-                                value={formatCurrency(vehicleResult.totalInstallment)} 
-                                hero 
-                            />
+                        <div className="grid grid-cols-1 gap-4">
+                            <div className="col-span-full">
+                                <ResultCard 
+                                    label="Cuota Mensual Estimada" 
+                                    value={formatCurrency(vehicleResult.totalInstallment)} 
+                                    hero 
+                                />
+                            </div>
                             
-                            {/* Tarjetas de Desglose */}
+                            {/* Desglose comentado a petición 
                             <ResultCard label="Interés Total" value={formatCurrency(vehicleResult.totalInterest)} />
                             <ResultCard label="Total a Pagar" value={formatCurrency(vehicleResult.totalToPay)} />
+                            */}
                         </div>
                     </div>
                 </motion.div>
